@@ -1,19 +1,17 @@
-name: MakeXRSYS
-run-name: Make XRSYS ${{ inputs.makeversion }}
+name: AutoMakeXRSYS
 on:
   workflow_dispatch:
-    inputs:
-      makeversion:
-        description: 'Target OS Version'
-        required: true
-        type: choice
-        options:
-          - w1164
-          - w1064
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   makexrsys:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        makeversion: 
+          - w1164
+          - w1064
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
