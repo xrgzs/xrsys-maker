@@ -37,5 +37,5 @@ jobs:
       - name: Big Task
         shell: pwsh
         run: |
-          $makeversion = [string] "${{ inputs.makeversion }}"
+          $makeversion = [string] "${{ matrix.makeversion }}"
           .\makexrsys.ps1
