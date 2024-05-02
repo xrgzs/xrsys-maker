@@ -175,6 +175,7 @@ foreach ($appName in @(
     'microsoft.yourphone',
     'microsoft.zunemusic',
     'microsoft.zunevideo',
+    'microsoft.xboxapp',
     'MicrosoftCorporationII.MicrosoftFamily',
     'MicrosoftTeams'
 )) {
