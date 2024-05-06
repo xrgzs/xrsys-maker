@@ -146,7 +146,7 @@ Remove-Item -Path $isopath -ErrorAction Ignore
 # if ($?) {Write-Host "software pack Download Successfully!"} else {Write-Error "software pack Download Failed!"}
 # Remove-Item -Path ".\temp\pack.7z" -ErrorAction Ignore
 # Remove-Item -Path ".\mount\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction Ignore
-.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp\Windows\Setup\Set\Run -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
+.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\Run -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
 if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRSYS-Tools Download Failed!"}
 "isxrsys" > ".\mount\Windows\Setup\zjsoftonlinexrsys.txt"
 
