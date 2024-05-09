@@ -289,7 +289,7 @@ SHA256  ：${sysfilesha256}
 " | Out-File -FilePath ".\${sysfile}.txt" -Encoding utf8
 
 # Publish image
-.\bin\rclone.exe copy "$sysfile.esd" "odb:/Share/Xiaoran Studio/System/Nightly" --progress
+.\bin\rclone.exe copy "$sysfile.esd" "oofutech:/Xiaoran Studio/System/Nightly" --progress
 if ($?) {Write-Host "Upload Successfully!"} else {Write-Error "Upload Failed!"}
-.\bin\rclone.exe copy "$sysfile.OsList.ini" "odb:/Share/Xiaoran Studio/System/Nightly" --progress
-.\bin\rclone.exe copy "$sysfile.txt" "odb:/Share/Xiaoran Studio/System/Nightly" --progress
+.\bin\rclone.exe copy "$sysfile.OsList.ini" "oofutech:/Xiaoran Studio/System/Nightly" --progress
+.\bin\rclone.exe copy "$sysfile.txt" "oofutech:/Xiaoran Studio/System/Nightly" --progress
