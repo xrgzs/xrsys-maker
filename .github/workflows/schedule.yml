@@ -12,6 +12,10 @@ jobs:
         makeversion: 
           - w1123h264
           - w1022h264
+          - w11lt2464
+          - w10lt2164
+          - w10lt1964
+          - w10lt1664
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
