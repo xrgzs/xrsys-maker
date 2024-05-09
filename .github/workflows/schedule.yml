@@ -10,8 +10,8 @@ jobs:
     strategy:
       matrix:
         makeversion: 
-          - w1164
-          - w1064
+          - w1123h264
+          - w1022h264
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

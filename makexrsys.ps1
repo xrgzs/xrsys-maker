@@ -1,17 +1,57 @@
 $ErrorActionPreference = 'Stop'
+$server = "https://alist.xrgzs.top"
+
+function Get-OsBySearch {
+    param (
+        $Path,
+        $Search
+    )
+    # parse server file list
+    $obj1 = (Invoke-WebRequest -Uri "$server/api/fs/list" `
+    -Method "POST" `
+    -ContentType "application/json;charset=UTF-8" `
+    -Body (@{
+        path = $Path
+        page = 1
+        password = ""
+        per_page = 0
+        refresh = $false
+    } | Convertto-Json)).Content | ConvertFrom-Json
+    
+    # get original system direct link
+    $obj2 = (Invoke-WebRequest -UseBasicParsing -Uri "$server/api/fs/get" `
+    -Method "POST" `
+    -ContentType "application/json;charset=UTF-8" `
+    -Body (@{
+        path = $Path+'/'+($obj1.data.content | Where-Object -Property Name -Like $Search).name
+        password = ""
+    } | Convertto-Json)).Content | ConvertFrom-Json
+    $out = @{}
+    $out.osurl = $obj2.data.raw_url
+    $out.osfile = $obj2.data.name
+    return $out
+}
 
 # set original system info
 switch ($makeversion) {
-    "w1164" {
-        $ospath = "/潇然工作室/System/Win11"
-        $ossearch = "MSUpdate_Win11_23H2*.esd"
+    "w1123h264" {
+        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
+        # $osurl = $obj.osurl
+        # $osfile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/23H2/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
         $osindex = 4
         $sysver = "XRSYS_Win11_23H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_23H2_专业_x64_完整"
     }
-    "w1064" {
-        $ospath = "/潇然工作室/System/Win10"
-        $ossearch = "MSUpdate_Win10_22H2*.esd"
+    "w1022h264" {
+        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
+        # $osurl = $obj.osurl
+        # $osfile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/22H2/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
         $osindex = 4
         $sysver = "XRSYS_Win10_22H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_22H2_专业_x64_完整"
@@ -19,14 +59,13 @@ switch ($makeversion) {
     Default {
         Write-Error "Unknown version.
         Example:
-            `$makeversion = [string] `"w1164`"
+            `$makeversion = [string] `"w1123h264`"
             .\makexrsys.ps1
         "
     }
 }
 
 # set version
-$server = "https://alist.xrgzs.top"
 Set-TimeZone -Id "China Standard Time" -PassThru
 $sysdate = Get-Date -Format "yyyy.MM.dd.HHmm"
 $sysfile = "${sysver}_${sysdate}"
@@ -60,30 +99,6 @@ if (-not (Test-Path -Path ".\bin\rclone.exe")) {
     Expand-Archive -Path .\temp\rclone.zip -DestinationPath .\temp\ -Force
     Copy-Item -Path .\temp\rclone-*-windows-amd64\rclone.exe -Destination .\bin\rclone.exe
 }
-
-# parse server file list
-$obj1 = (Invoke-WebRequest -Uri "$server/api/fs/list" `
--Method "POST" `
--ContentType "application/json;charset=UTF-8" `
--Body (@{
-    path = $ospath
-    page = 1
-    password = ""
-    per_page = 0
-    refresh = $false
-} | Convertto-Json)).Content | ConvertFrom-Json
-
-# get original system direct link
-$obj2 = (Invoke-WebRequest -UseBasicParsing -Uri "$server/api/fs/get" `
--Method "POST" `
--ContentType "application/json;charset=UTF-8" `
--Body (@{
-    path = $ospath+'/'+($obj1.data.content | Where-Object -Property Name -Like $ossearch).name
-    password = ""
-} | Convertto-Json)).Content | ConvertFrom-Json
-
-$osurl = $obj2.data.raw_url
-$osfile = $obj2.data.name
 
 Remove-Item -Path $osfile -Force -ErrorAction Ignore
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -o "$osfile" "$osurl"
