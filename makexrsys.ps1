@@ -56,6 +56,50 @@ switch ($makeversion) {
         $sysver = "XRSYS_Win10_22H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_22H2_专业_x64_完整"
     }
+    "w11lt2464" {
+        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
+        # $osurl = $obj.osurl
+        # $osfile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 1
+        $sysver = "XRSYS_Win11_LTSC2024_EntS_x64_CN_Full"
+        $sysvercn = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
+    }
+    "w10lt2164" {
+        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
+        # $osurl = $obj.osurl
+        # $osfile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 1
+        $sysver = "XRSYS_Win10_LTSC2021_EntS_x64_CN_Full"
+        $sysvercn = "潇然系统_Win10_LTSC2021_企业S_x64_完整"
+    }
+    "w10lt1964" {
+        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
+        # $osurl = $obj.osurl
+        # $osfile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2019/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 1
+        $sysver = "XRSYS_Win10_LTSC2019_EntS_x64_CN_Full"
+        $sysvercn = "潇然系统_Win10_LTSC2019_企业S_x64_完整"
+    }
+    "w10lt1664" {
+        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
+        # $osurl = $obj.osurl
+        # $osfile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2016/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2016/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 1
+        $sysver = "XRSYS_Win10_LTSC2016_EntS_x64_CN_Full"
+        $sysvercn = "潇然系统_Win10_LTSC2016_企业S_x64_完整"
+    }
     Default {
         Write-Error "Unknown version.
         Example:
