@@ -245,19 +245,7 @@ foreach ($appName in @(
 }
 
 # disable default wd
-Try {
-    Disable-WindowsOptionalFeature -Path ".\mount" -FeatureName Windows-Defender-Default-Definitions -ErrorAction Stop
-}
-Catch {
-    Write-Host "An error occurred while disabling Windows Defender Default Definitions:`n$($_.Exception.Message)"
-}
-
-Try {
-    Disable-WindowsOptionalFeature -Path ".\mount" -FeatureName Windows-Defender-ApplicationGuard -ErrorAction Stop
-}
-Catch {
-    Write-Host "An error occurred while disabling Windows Defender Application Guard:`n$($_.Exception.Message)"
-}
+Get-WindowsOptionalFeature -Path ".\mount" | Where-Object {$_.FeatureName -like "*Defender*"} | Disable-WindowsOptionalFeature
 
 # write version
 "${sysvercn}_${sysdate} 
