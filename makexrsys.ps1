@@ -115,9 +115,9 @@ $sysdate = Get-Date -Format "yyyy.MM.dd.HHmm"
 $sysfile = "${sysver}_${sysdate}"
 
 # remove temporaty files
-Remove-Item -Path ".\temp\" -Recurse -ErrorAction Ignore
-New-Item -Path ".\bin\" -ItemType "directory" -ErrorAction Ignore
-New-Item -Path ".\temp\" -ItemType "directory" -ErrorAction Ignore
+Remove-Item -Path ".\temp\" -Recurse -ErrorAction SilentlyContinue 
+New-Item -Path ".\bin\" -ItemType "directory" -ErrorAction SilentlyContinue 
+New-Item -Path ".\temp\" -ItemType "directory" -ErrorAction SilentlyContinue 
 
 # Installing dependencies
 if (-not (Test-Path -Path ".\bin\rclone.conf")) {
@@ -144,7 +144,7 @@ if (-not (Test-Path -Path ".\bin\rclone.exe")) {
     Copy-Item -Path .\temp\rclone-*-windows-amd64\rclone.exe -Destination .\bin\rclone.exe
 }
 
-Remove-Item -Path $osfile -Force -ErrorAction Ignore
+Remove-Item -Path $osfile -Force -ErrorAction SilentlyContinue 
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -o "$osfile" "$osurl"
 if ($?) {Write-Host "System Image Download Successfully!"} else {Write-Error "System Image Download Failed!"}
 
@@ -178,7 +178,7 @@ if ($osfileext -eq ".esd") {
 
 # make xrsys image
 # mount image
-New-Item -Path ".\mount\" -ItemType "directory" -ErrorAction Ignore
+New-Item -Path ".\mount\" -ItemType "directory" -ErrorAction SilentlyContinue 
 Write-Host "Mounting $osfilename.wim, please wait..."
 Mount-WindowsImage -ImagePath "$osfilename.wim" -Index $osindex -Path "mount"
 # inject deploy
@@ -189,23 +189,23 @@ Copy-Item -Path ".\injectdeploy.bat" -Destination ".\mount" -Force
 Copy-Item -Path ".\unattend.xml" -Destination ".\mount" -Force
 .\mount\injectdeploy.bat /S
 if ($?) {Write-Host "Inject Deploy Successfully!"} else {Write-Error "Inject Deploy Failed!"}
-Remove-Item -Path ".\mount\injectdeploy.bat" -ErrorAction Ignore
+Remove-Item -Path ".\mount\injectdeploy.bat" -ErrorAction SilentlyContinue 
 
 # add drivers
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
 if ($?) {Write-Host "Driver Download Successfully!"} else {Write-Error "Driver Download Failed!"}
 $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 $isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter
-Copy-Item -Path "${isomount}:\" -Destination ".\mount\Windows\WinDrive" -Recurse -Force -ErrorAction Ignore
+Copy-Item -Path "${isomount}:\" -Destination ".\mount\Windows\WinDrive" -Recurse -Force -ErrorAction SilentlyContinue 
 Dismount-DiskImage -ImagePath $isopath 
-Remove-Item -Path $isopath -ErrorAction Ignore
+Remove-Item -Path $isopath -ErrorAction SilentlyContinue 
 
 # add software pack
 # .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o pack.7z "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/pack64.7z"
 # ."C:\Program Files\7-Zip\7z.exe" x -r -y -p123 ".\temp\pack.7z" -o".\mount\Windows\Setup\Set\osc"
 # if ($?) {Write-Host "software pack Download Successfully!"} else {Write-Error "software pack Download Failed!"}
-# Remove-Item -Path ".\temp\pack.7z" -ErrorAction Ignore
-# Remove-Item -Path ".\mount\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction Ignore
+# Remove-Item -Path ".\temp\pack.7z" -ErrorAction SilentlyContinue 
+# Remove-Item -Path ".\mount\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction SilentlyContinue 
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\Run -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
 if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRSYS-Tools Download Failed!"}
 "isxrsys" > ".\mount\Windows\Setup\zjsoftonlinexrsys.txt"
@@ -241,12 +241,12 @@ foreach ($appName in @(
 )) {
     $preinstalled | 
         Where-Object {$_.packagename -like "*$appName*"} | 
-            Remove-AppxProvisionedPackage -Path ".\mount" -ErrorAction Ignore
+            Remove-AppxProvisionedPackage -Path ".\mount" -ErrorAction SilentlyContinue 
 }
 
 # disable default wd
-Disable-WindowsOptionalFeature -Path ".\mount" -FeatureName Windows-Defender-Default-Definitions -ErrorAction Ignore
-Disable-WindowsOptionalFeature -Path ".\mount" -FeatureName Windows-Defender-ApplicationGuard -ErrorAction Ignore
+Disable-WindowsOptionalFeature -Path ".\mount" -FeatureName Windows-Defender-Default-Definitions -ErrorAction SilentlyContinue 
+Disable-WindowsOptionalFeature -Path ".\mount" -FeatureName Windows-Defender-ApplicationGuard -ErrorAction SilentlyContinue 
 
 # write version
 "${sysvercn}_${sysdate} 
