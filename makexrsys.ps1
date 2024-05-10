@@ -153,19 +153,20 @@ $osfilename = [System.IO.Path]::GetFileNameWithoutExtension("$osfile")
 
 # extract iso
 if ($osfileext -eq ".iso") {
-    
     ."C:\Program Files\7-Zip\7z.exe" e -y "$osfile" sources\install.wim
-    if ($?) {
+    if (Test-Path -Path "install.wim") {
         Write-Host "extract iso Successfully!"
         $osfile = "install.wim"
         $osfilename = "install"
         $osfileext = ".wim"
     } else {
         ."C:\Program Files\7-Zip\7z.exe" e -y "$osfile" sources\install.esd
-        $osfile = "install.esd"
-        $osfilename = "install"
-        $osfileext = ".esd"
-        if ($?) {Write-Host "extract esd Successfully!"} else {
+        if (Test-Path -Path "install.esd") {
+            Write-Host "extract esd Successfully!"
+            $osfile = "install.esd"
+            $osfilename = "install"
+            $osfileext = ".esd"
+        } else {
             Write-Error "extract iso or esd failed!"
         }
     }
