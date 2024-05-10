@@ -8,6 +8,7 @@ jobs:
   makexrsys:
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         makeversion: 
           - w1123h264
