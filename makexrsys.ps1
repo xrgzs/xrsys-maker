@@ -109,6 +109,23 @@ switch ($makeversion) {
     }
 }
 
+if ($isosd -eq $true) {
+    if ($sysver -like "*LTSB2016*") {
+        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_noDCH_x64_Lite.iso"
+    } else {
+        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_Win11_x64_Lite.iso"
+    }
+    $sysver = $sysver + "_DrvCeo"
+    $sysvercn = $sysvercn + "_驱动总裁"
+}
+
+# dealosdriver
+if ($null -eq $osdrvurl) {
+    $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
+    $sysver = $sysver + "_Net"
+    $sysvercn = $sysvercn + "_主板驱动"
+}
+
 # set version
 Set-TimeZone -Id "China Standard Time" -PassThru
 $sysdate = Get-Date -Format "yyyy.MM.dd.HHmm"
@@ -192,7 +209,7 @@ if ($?) {Write-Host "Inject Deploy Successfully!"} else {Write-Error "Inject Dep
 Remove-Item -Path ".\mount\injectdeploy.bat" -ErrorAction SilentlyContinue 
 
 # add drivers
-.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
+.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$osdrvurl"
 if ($?) {Write-Host "Driver Download Successfully!"} else {Write-Error "Driver Download Failed!"}
 $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 $isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter

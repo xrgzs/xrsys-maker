@@ -14,6 +14,11 @@ on:
           - w10lt2164
           - w10lt1964
           - w10lt1664
+      isosd:
+        description: 'Add DrvCeo'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   makexrsys:
@@ -44,4 +49,5 @@ jobs:
         shell: pwsh
         run: |
           $makeversion = [string] "${{ inputs.makeversion }}"
+          $isosd       = [bool] $${{ inputs.isosd }}
           .\makexrsys.ps1

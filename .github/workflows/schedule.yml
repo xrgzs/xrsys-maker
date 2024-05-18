@@ -17,6 +17,9 @@ jobs:
           - w10lt2164
           - w10lt1964
           - w10lt1664
+        isosd: 
+          - true
+          - false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,4 +46,5 @@ jobs:
         shell: pwsh
         run: |
           $makeversion = [string] "${{ matrix.makeversion }}"
+          $isosd       = [bool] $${{ matrix.isosd }}
           .\makexrsys.ps1
