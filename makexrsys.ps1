@@ -34,6 +34,14 @@ function Get-OsBySearch {
 
 # set original system info
 switch ($makeversion) {
+    "w1124h264" {
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/24H2/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 4
+        $sysver = "XRSYS_Win11_24H2_Pro_x64_CN_Full"
+        $sysvercn = "潇然系统_Win11_24H2_专业_x64_完整"
+    }
     "w1123h264" {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
         # $osurl = $obj.osurl
@@ -57,9 +65,6 @@ switch ($makeversion) {
         $sysvercn = "潇然系统_Win10_22H2_专业_x64_完整"
     }
     "w11lt2464" {
-        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
-        # $osurl = $obj.osurl
-        # $osfile = $obj.osfile
         $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_x64.json").Content | ConvertFrom-Json
         $osurl = "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
@@ -68,9 +73,6 @@ switch ($makeversion) {
         $sysvercn = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
     }
     "w10lt2164" {
-        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
-        # $osurl = $obj.osurl
-        # $osfile = $obj.osfile
         $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/latest_x64.json").Content | ConvertFrom-Json
         $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
@@ -79,9 +81,6 @@ switch ($makeversion) {
         $sysvercn = "潇然系统_Win10_LTSC2021_企业S_x64_完整"
     }
     "w10lt1964" {
-        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
-        # $osurl = $obj.osurl
-        # $osfile = $obj.osfile
         $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2019/latest_x64.json").Content | ConvertFrom-Json
         $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
@@ -90,9 +89,6 @@ switch ($makeversion) {
         $sysvercn = "潇然系统_Win10_LTSC2019_企业S_x64_完整"
     }
     "w10lt1664" {
-        # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
-        # $osurl = $obj.osurl
-        # $osfile = $obj.osfile
         $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSB2016/latest_x64.json").Content | ConvertFrom-Json
         $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
