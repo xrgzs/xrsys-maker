@@ -241,6 +241,7 @@ foreach ($appName in @(
     'microsoft.mixedreality.portal',
     'microsoft.mspaint',
     'microsoft.office.onenote',
+    'microsoft.OutlookForWindows',
     'microsoft.people',
     'microsoft.powerautomatedesktop',
     'microsoft.windowsfeedbackhub',
@@ -251,6 +252,7 @@ foreach ($appName in @(
     'microsoft.xboxapp',
     'MicrosoftCorporationII.MicrosoftFamily',
     'MicrosoftTeams'
+    'MSTeams'
 )) {
     $preinstalled | 
         Where-Object {$_.packagename -like "*$appName*"} | 
