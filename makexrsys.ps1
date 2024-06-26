@@ -39,6 +39,8 @@ switch ($makeversion) {
         $osurl = "$server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
         $osindex = 4
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
         $sysver = "XRSYS_Win11_24H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_24H2_专业_x64_完整"
     }
@@ -50,6 +52,8 @@ switch ($makeversion) {
         $osurl = "$server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
         $osindex = 4
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
         $sysver = "XRSYS_Win11_23H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_23H2_专业_x64_完整"
     }
@@ -61,6 +65,8 @@ switch ($makeversion) {
         $osurl = "$server/d/mount/oofutech/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
         $osindex = 4
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
         $sysver = "XRSYS_Win10_22H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_22H2_专业_x64_完整"
     }
@@ -69,6 +75,8 @@ switch ($makeversion) {
         $osurl = "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
         $osindex = 1
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
         $sysver = "XRSYS_Win11_LTSC2024_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
     }
@@ -77,6 +85,8 @@ switch ($makeversion) {
         $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
         $osindex = 1
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
         $sysver = "XRSYS_Win10_LTSC2021_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_LTSC2021_企业S_x64_完整"
     }
@@ -85,6 +95,8 @@ switch ($makeversion) {
         $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
         $osindex = 1
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
         $sysver = "XRSYS_Win10_LTSC2019_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_LTSC2019_企业S_x64_完整"
     }
@@ -93,6 +105,8 @@ switch ($makeversion) {
         $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
         $osfile = $obj.name
         $osindex = 1
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
         $sysver = "XRSYS_Win10_LTSB2016_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_LTSB2016_企业S_x64_完整"
     }
@@ -125,7 +139,7 @@ if ($null -eq $osdrvurl) {
 # set version
 Set-TimeZone -Id "China Standard Time" -PassThru
 $sysdate = Get-Date -Format "yyyy.MM.dd.HHmm"
-$sysfile = "${sysver}_${sysdate}"
+$sysfile = "${sysver}_${sysdate}_${osversion}"
 
 # remove temporaty files
 Remove-Item -Path ".\temp\" -Recurse -ErrorAction SilentlyContinue 
@@ -290,7 +304,7 @@ describe=${sysver}
 Time=${sysdate}
 OSUrl=${server}/d/pxy/Xiaoran%20Studio/System/Nightly/${sysfile}.esd
 OSFile=${sysfile}.esd
-Icon=10
+Icon=${osver}
 UEFI=1
 Index=1
 Bit=${sysfilesize} GB
