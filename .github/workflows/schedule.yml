@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   schedule:
     # - cron: '0 0 * * *' #nightly
-    - cron: '0 0 * * 3' #weekly
+    - cron: '0 0 * * 4' #weekly
 
 jobs:
   makexrsys:
