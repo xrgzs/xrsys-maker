@@ -235,6 +235,7 @@ Remove-Item -Path $isopath -ErrorAction SilentlyContinue
 # Remove-Item -Path ".\mount\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction SilentlyContinue 
 $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json).'msedge-stable-win-x64'
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\osc\runtime\Edge -o "$($msedge.文件名)" "$($msedge.下载链接)" --checksum=sha-256=$msedge.Sha256
+if ($?) {Write-Host "Edge Download Successfully!"} else {Write-Error "Edge Download Failed!"}
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\Run -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
 if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRSYS-Tools Download Failed!"}
 "isxrsys" > ".\mount\Windows\Setup\zjsoftonlinexrsys.txt"
