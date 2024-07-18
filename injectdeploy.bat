@@ -2,7 +2,7 @@
 @echo off
 setlocal enabledelayedexpansion
 color a
-title 潇然系统部署手动离线接管程序 - V2024.5.1.0
+title 潇然系统部署手动离线接管程序 - V2024.7.18.0
 cd /d "%~dp0"
 set silent=0
 
@@ -148,6 +148,17 @@ for %%a in (
 ) do REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-%%a" /t REG_DWORD /d "0" /f
 echo 禁用游戏栏 Game Bar
 REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\GameBar" /v "UseNexusForGameBarEnabled" /t REG_DWORD /d "0" /f
+echo 隐藏任务栏小组件
+REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /t REG_DWORD /d "0" /f
+echo 隐藏任务栏聊天
+REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarMn" /t REG_DWORD /d "0" /f
+echo 任务栏显示搜索图标
+REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "SearchboxTaskbarMode" /t REG_DWORD /d "1" /f
+echo 任务栏禁用资讯和兴趣
+REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Feeds" /v "ShellFeedsTaskbarViewMode" /t REG_DWORD /d "2" /f
+REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Feeds" /v "ShellFeedsTaskbarOpenOnHover" /t REG_DWORD /d "0" /f
+REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Feeds" /v "IsFeedsAvailable" /t REG_DWORD /d "0" /f
+REG ADD "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Feeds" /v "IsEnterpriseDevice" /t REG_DWORD /d "1" /f
 
 REG UNLOAD "HKLM\Mount_Default"
 >"Windows\Setup\xrsys.txt" echo isxrsys
