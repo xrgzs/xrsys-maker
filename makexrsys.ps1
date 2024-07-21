@@ -222,9 +222,10 @@ Remove-Item -Path ".\mount\injectdeploy.bat" -ErrorAction SilentlyContinue
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$osdrvurl"
 if ($?) {Write-Host "Driver Download Successfully!"} else {Write-Error "Driver Download Failed!"}
 $isopath = Resolve-Path -Path ".\temp\drivers.iso"
-$isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter
-Copy-Item -Path "${isomount}:\" -Destination ".\mount\Windows\WinDrive" -Recurse -Force -ErrorAction SilentlyContinue 
-Dismount-DiskImage -ImagePath $isopath 
+# $isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter
+# Copy-Item -Path "${isomount}:\" -Destination ".\mount\Windows\WinDrive" -Recurse -Force -ErrorAction SilentlyContinue 
+# Dismount-DiskImage -ImagePath $isopath 
+."C:\Program Files\7-Zip\7z.exe" x -r -y ".\temp\drivers.iso" -o".\mount\Windows\WinDrive"
 Remove-Item -Path $isopath -ErrorAction SilentlyContinue 
 
 # add software pack
