@@ -53,13 +53,6 @@
                     <CommandLine>%SystemDrive%\Windows\Setup\Set\osc.exe /S /4</CommandLine>
                 </SynchronousCommand>
             </FirstLogonCommands>
-            <LogonCommands>
-                <AsynchronousCommand wcm:action="add">
-                    <Description>jinzhuomian</Description>
-                    <CommandLine>%SystemDrive%\Windows\Setup\Set\osc.exe /S /5</CommandLine>
-                    <Order>1</Order>
-                </AsynchronousCommand>
-            </LogonCommands>
         </component>
     </settings>
 </unattend>
