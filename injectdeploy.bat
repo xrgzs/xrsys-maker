@@ -2,7 +2,7 @@
 @echo off
 setlocal enabledelayedexpansion
 color a
-title 潇然系统部署手动离线接管程序 - V2024.7.18.0
+title 潇然系统部署手动离线接管程序 - V2024.8.10.0
 cd /d "%~dp0"
 set silent=0
 
@@ -110,6 +110,15 @@ REG ADD "HKLM\Mount_SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v
 REG ADD "HKLM\Mount_SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "ShippedWithReserves" /t REG_DWORD /d "0" /f
 echo 处理OOBE
 REG ADD "HKLM\Mount_SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v "BypassNRO" /t REG_DWORD /d "1" /f
+REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe" /v "DevHomeUpdate" /f
+@REM REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\EdgeUpdate" /f
+REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\CrossDeviceUpdate" /f
+REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\DevHomeUpdate" /f
+REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\DevHomeUpdate" /f
+@REM REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\EdgeUpdate" /f
+REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\OutlookUpdate" /f
+REG DELETE "HKLM\Mount_SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\CrossDeviceUpdate" /f
+
 REG UNLOAD "HKLM\Mount_SOFTWARE"
 
 
@@ -118,8 +127,8 @@ echo 修改默认用户注册表
 REG LOAD "HKLM\Mount_Default" "Users\Default\NTUSER.DAT"
 echo 跳过系统配置检测
 for %%a in (SV1,SV2) do REG ADD "HKLM\Mount_Default\Control Panel\UnsupportedHardwareNotificationCache" /f /v "%%a" /t REG_DWORD /d 0
-
-
+echo 禁用 OneDriveSetup自动启动
+REG DELETE "HKLM\Mount_Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup"
 echo 屏蔽“同意个人数据跨境传输”
 REG ADD "HKLM\Mount_Default\Software\Microsoft\Windows\CurrentVersion\CloudExperienceHost\Intent\PersonalDataExport" /f /v "PDEShown" /t REG_DWORD /d 2
 echo 禁用 Windows 全新安装后擅自安装三方 App
