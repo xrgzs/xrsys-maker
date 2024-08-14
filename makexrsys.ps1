@@ -138,7 +138,8 @@ if ($null -eq $osdrvurl) {
 
 # set version
 Set-TimeZone -Id "China Standard Time" -PassThru
-$sysdate = Get-Date -Format "yyyy.MM.dd.HHmm"
+$sysdatefull = Get-Date
+$sysdate = $sysdatefull | Get-Date -Format "yyyy.MM.dd"
 $sysfile = "${sysver}_${sysdate}_${osversion}"
 
 # remove temporaty files
@@ -302,27 +303,28 @@ $sysfilebyte = (Get-ItemProperty ".\$sysfile.esd").Length
 $sysfilesize = [Math]::Round($sysfilebyte / 1024 /1024 /1024, 2)
 $sysfilemd5 = Get-FileHash ".\$sysfile.esd" -Algorithm MD5 | Select-Object -ExpandProperty Hash
 $sysfilesha256 = Get-FileHash ".\$sysfile.esd" -Algorithm SHA256 | Select-Object -ExpandProperty Hash
-
-"[${sysvercn}_每夜版]
-describe=${sysver}
-Time=${sysdate}
-OSUrl=${server}/d/pxy/Xiaoran%20Studio/System/Nightly/${sysfile}.esd
-OSFile=${sysfile}.esd
-Icon=${osver}
-UEFI=1
-Index=1
-Bit=${sysfilesize} GB
-md5=${sysfilemd5}
-" | Out-File -FilePath ".\${sysfile}.OsList.ini" -Encoding gbk
-
-"文件名称：${sysfile}.esd
-文件大小：${sysfilesize} GB ($sysfilebyte bytes)
-MD5     ：${sysfilemd5}
-SHA256  ：${sysfilesha256}
-" | Out-File -FilePath ".\${sysfile}.txt" -Encoding utf8
+@{
+    "sys" = @{
+        "ver" = $sysver
+        "vercn" = $sysvercn
+        "date" = $sysdate
+        "datefull" = $sysdatefull
+        "file" = "$sysfile.esd"
+        "size" = "$sysfilesize GB"
+        "byte" = $sysfilebyte
+        "md5" = $sysfilemd5
+        "sha256" = $sysfilesha256
+        "url" = "$server/d/pxy/Xiaoran%20Studio/System/Nightly/$sysdate/$sysfile.esd"
+    }
+    "os" = @{
+        "ver" = $osver
+        "version" = $osversion
+        "file" = $osfile
+        "index" = $osindex
+    }
+} | ConvertTo-Json | Out-File -FilePath ".\$sysfile.json" -Encoding utf8
 
 # Publish image
-.\bin\rclone.exe copy "$sysfile.esd" "oofutech:/Xiaoran Studio/System/Nightly" --progress
+.\bin\rclone.exe copy "$sysfile.esd" "oofutech:/Xiaoran Studio/System/Nightly/$sysdate" --progress
 if ($?) {Write-Host "Upload Successfully!"} else {Write-Error "Upload Failed!"}
-.\bin\rclone.exe copy "$sysfile.OsList.ini" "oofutech:/Xiaoran Studio/System/Nightly" --progress
-.\bin\rclone.exe copy "$sysfile.txt" "oofutech:/Xiaoran Studio/System/Nightly" --progress
+.\bin\rclone.exe copyto "$sysfile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysver.json" --progress
