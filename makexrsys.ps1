@@ -41,6 +41,7 @@ switch ($makeversion) {
         $osindex = 4
         $osver = $obj.os_ver
         $osversion = $obj.os_version
+        $osarch = $obj.os_arch
         $sysver = "XRSYS_Win11_24H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_24H2_专业_x64_完整"
     }
@@ -54,6 +55,7 @@ switch ($makeversion) {
         $osindex = 4
         $osver = $obj.os_ver
         $osversion = $obj.os_version
+        $osarch = $obj.os_arch
         $sysver = "XRSYS_Win11_23H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_23H2_专业_x64_完整"
     }
@@ -67,6 +69,7 @@ switch ($makeversion) {
         $osindex = 4
         $osver = $obj.os_ver
         $osversion = $obj.os_version
+        $osarch = $obj.os_arch
         $sysver = "XRSYS_Win10_22H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_22H2_专业_x64_完整"
     }
@@ -77,6 +80,7 @@ switch ($makeversion) {
         $osindex = 1
         $osver = $obj.os_ver
         $osversion = $obj.os_version
+        $osarch = $obj.os_arch
         $sysver = "XRSYS_Win11_LTSC2024_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
     }
@@ -87,6 +91,7 @@ switch ($makeversion) {
         $osindex = 1
         $osver = $obj.os_ver
         $osversion = $obj.os_version
+        $osarch = $obj.os_arch
         $sysver = "XRSYS_Win10_LTSC2021_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_LTSC2021_企业S_x64_完整"
     }
@@ -97,6 +102,7 @@ switch ($makeversion) {
         $osindex = 1
         $osver = $obj.os_ver
         $osversion = $obj.os_version
+        $osarch = $obj.os_arch
         $sysver = "XRSYS_Win10_LTSC2019_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_LTSC2019_企业S_x64_完整"
     }
@@ -107,6 +113,7 @@ switch ($makeversion) {
         $osindex = 1
         $osver = $obj.os_ver
         $osversion = $obj.os_version
+        $osarch = $obj.os_arch
         $sysver = "XRSYS_Win10_LTSB2016_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_LTSB2016_企业S_x64_完整"
     }
@@ -317,6 +324,7 @@ $sysfilesha256 = Get-FileHash ".\$sysfile.esd" -Algorithm SHA256 | Select-Object
         "url" = "$server/d/pxy/Xiaoran%20Studio/System/Nightly/$sysdate/$sysfile.esd"
     }
     "os" = @{
+        "arch" = $osarch
         "ver" = $osver
         "version" = $osversion
         "file" = $osfile
