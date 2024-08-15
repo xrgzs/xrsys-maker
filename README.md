@@ -2,6 +2,8 @@
 
 构建完整接管部署的潇然系统。支持通过 Github Actions 自动化构建每夜版潇然系统镜像文件。
 
+获取成品：https://sys.xrgzs.top/get/nightly
+
 ## 手动接管系统部署
 
 1. 下载以下文件：
