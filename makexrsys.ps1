@@ -335,4 +335,5 @@ $sysfilesha256 = Get-FileHash ".\$sysfile.esd" -Algorithm SHA256 | Select-Object
 # Publish image
 .\bin\rclone.exe copy "$sysfile.esd" "oofutech:/Xiaoran Studio/System/Nightly/$sysdate" --progress
 if ($?) {Write-Host "Upload Successfully!"} else {Write-Error "Upload Failed!"}
+.\bin\rclone.exe copy "$sysfile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysdate" --progress
 .\bin\rclone.exe copyto "$sysfile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysver.json" --progress
