@@ -82,8 +82,8 @@ BypassRAMCheck
 BypassSecureBootCheck
 BypassStorageCheck
 BypassTPMCheck
-) do REG ADD "HKLM\Mount_SYSTEM\Setup\LabConfig"/f /v "%%a" /t REG_DWORD /d 1
-REG ADD "HKLM\Mount_SYSTEM\Setup\MoSetup"/f /v "AllowUpgradesWithUnsupportedTPMOrCPU" /t REG_DWORD /d 1
+) do REG ADD "HKLM\Mount_SYSTEM\Setup\LabConfig" /f /v "%%a" /t REG_DWORD /d 1
+REG ADD "HKLM\Mount_SYSTEM\Setup\MoSetup" /f /v "AllowUpgradesWithUnsupportedTPMOrCPU" /t REG_DWORD /d 1
 REG UNLOAD "HKLM\Mount_SYSTEM"
 
 echo ÐÞ¸ÄÈí¼þ×¢²á±í
