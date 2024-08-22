@@ -138,7 +138,11 @@ if ($isosd -eq $true) {
 
 # dealosdriver
 if ($null -eq $osdrvurl) {
-    $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
+    if ([float]$osversion -gt 19041.1) {
+        $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10x64.iso"
+    } else {
+        $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
+    }
     $sysver = $sysver + "_Net"
     $sysvercn = $sysvercn + "_主板驱动"
 }
