@@ -127,10 +127,20 @@ switch ($makeversion) {
 }
 
 if ($isosd -eq $true) {
-    if ($sysver -like "*LTSB2016*") {
-        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_noDCH_x64_Lite.iso"
-    } else {
+    if ($osarch -eq "x64" -and [float]$osversion -ge 16299.0) {
+        # DCH x64
         $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_Win11_x64_Lite.iso"
+    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
+        # noDCH x64
+        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_noDCH_x64_Lite.iso"
+    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
+        # Win7 x64
+        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x64_Lite.iso"
+    } elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
+        # Win7 x86
+        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x86_Lite.iso"
+    } else {
+        Write-Error "Cannot match related driver iso."
     }
     $sysver = $sysver + "_DrvCeo"
     $sysvercn = $sysvercn + "_驱动总裁"
@@ -138,10 +148,16 @@ if ($isosd -eq $true) {
 
 # dealosdriver
 if ($null -eq $osdrvurl) {
-    if ([float]$osversion -gt 19041.1) {
+    if ($osarch -eq "x64" -and [float]$osversion -ge 19041.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10x64.iso"
-    } else {
+    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
+    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
+        $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin7x64.iso"
+    } elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
+        $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin7x86.iso"
+    } else {
+        Write-Error "Cannot match related driver iso."
     }
     $sysver = $sysver + "_Net"
     $sysvercn = $sysvercn + "_主板驱动"
@@ -246,12 +262,16 @@ Remove-Item -Path $isopath -ErrorAction SilentlyContinue
 # if ($?) {Write-Host "software pack Download Successfully!"} else {Write-Error "software pack Download Failed!"}
 # Remove-Item -Path ".\temp\pack.7z" -ErrorAction SilentlyContinue 
 # Remove-Item -Path ".\mount\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction SilentlyContinue 
-$msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json).'msedge-stable-win-x64'
-.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\osc\runtime\Edge -o "$($msedge.文件名)" "$($msedge.下载链接)"
-if ($?) {Write-Host "Edge Download Successfully!"} else {Write-Error "Edge Download Failed!"}
+if ([int]$osver -ge 10) {
+    # add edge runtime Windows 10+ 
+    $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json)."msedge-stable-win-$osarch"
+    .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\osc\runtime\Edge -o "$($msedge.文件名)" "$($msedge.下载链接)"
+    if ($?) {Write-Host "Edge Download Successfully!"} else {Write-Error "Edge Download Failed!"}
+}
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\Run -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
 if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRSYS-Tools Download Failed!"}
-"isxrsys" > ".\mount\Windows\Setup\zjsoftonlinexrsys.txt"
+# add tag
+# "isxrsys" > ".\mount\Windows\Setup\zjsoftonlinexrsys.txt"
 
 # remove preinstalled appx
 $preinstalled = Get-AppxProvisionedPackage -Path ".\mount"
@@ -316,7 +336,7 @@ $sysfilemd5 = Get-FileHash ".\$sysfile.esd" -Algorithm MD5 | Select-Object -Expa
 $sysfilesha256 = Get-FileHash ".\$sysfile.esd" -Algorithm SHA256 | Select-Object -ExpandProperty Hash
 @{
     "sys" = @{
-        "ver" = $sysver
+        "ver" = [string]$sysver
         "vercn" = $sysvercn
         "date" = $sysdate
         "datefull" = $sysdatefull
