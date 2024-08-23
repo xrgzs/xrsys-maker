@@ -2,7 +2,7 @@
 @echo off
 setlocal enabledelayedexpansion
 color a
-title 潇然系统部署手动离线接管程序 - V2024.8.18.0
+title 潇然系统部署手动离线接管程序 - V2024.8.24.0
 cd /d "%~dp0"
 set silent=0
 
@@ -84,6 +84,8 @@ BypassStorageCheck
 BypassTPMCheck
 ) do REG ADD "HKLM\Mount_SYSTEM\Setup\LabConfig" /f /v "%%a" /t REG_DWORD /d 1
 REG ADD "HKLM\Mount_SYSTEM\Setup\MoSetup" /f /v "AllowUpgradesWithUnsupportedTPMOrCPU" /t REG_DWORD /d 1
+echo 禁用BitLocker自动加密
+REG ADD "HKLM\Mount_SYSTEM\ControlSet001\BitLocker" /f /v "PreventDeviceEncryption" /t REG_DWORD /d 1
 REG UNLOAD "HKLM\Mount_SYSTEM"
 
 echo 修改软件注册表
