@@ -15,6 +15,7 @@ on:
           - w10lt2164
           - w10lt1964
           - w10lt1664
+          - w7pro64
       isosd:
         description: 'Add DrvCeo'
         required: false

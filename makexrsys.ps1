@@ -117,6 +117,17 @@ switch ($makeversion) {
         $sysver = "XRSYS_Win10_LTSB2016_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win10_LTSB2016_企业S_x64_完整"
     }
+    "w7pro64" {
+        $obj = (Invoke-RestMethod https://c.xrgzs.top/OSList.json).'【更新】7_SP1_IE11_自选_64位_无驱动_原版无接管'
+        $osurl = $obj.osurl2
+        $osfile = $obj.osfile
+        $osindex = 4
+        $osver = '7'
+        $osversion = ($obj.osfile -split '_')[-2]
+        $osarch = 'x64'
+        $sysver = "XRSYS_Win7_SP2_Pro_x64_CN_Full"
+        $sysvercn = "潇然系统_Win7_SP2_专业_x64_完整"
+    }
     Default {
         Write-Error "Unknown version.
         Example:
@@ -274,43 +285,44 @@ if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRS
 # "isxrsys" > ".\mount\Windows\Setup\zjsoftonlinexrsys.txt"
 
 # remove preinstalled appx
-$preinstalled = Get-AppxProvisionedPackage -Path ".\mount"
-foreach ($appName in @(
-    'clipchamp.clipchamp',
-    'Microsoft.549981C3F5F10',
-    'microsoft.microsoftteams',
-    'microsoft.skypeapp',
-    'microsoft.todos',
-    'microsoft.bingnews',
-    'microsoft.gethelp',
-    'microsoft.getstarted',
-    'microsoft.microsoft3dviewer',
-    'microsoft.microsoftofficehub',
-    'microsoft.microsoftsolitairecollection',
-    'microsoft.microsoftstickynotes',
-    'microsoft.mixedreality.portal',
-    'microsoft.mspaint',
-    'microsoft.office.onenote',
-    'microsoft.OutlookForWindows',
-    'microsoft.people',
-    'microsoft.powerautomatedesktop',
-    'microsoft.windowsfeedbackhub',
-    'microsoft.windowsmaps',
-    'microsoft.yourphone',
-    'microsoft.zunemusic',
-    'microsoft.zunevideo',
-    'microsoft.xboxapp',
-    'MicrosoftCorporationII.MicrosoftFamily',
-    'MicrosoftTeams'
-    'MSTeams'
-)) {
-    $preinstalled | 
-        Where-Object {$_.packagename -like "*$appName*"} | 
-            Remove-AppxProvisionedPackage -Path ".\mount" -ErrorAction SilentlyContinue 
+if ([int]$osver -ge 10) {
+    $preinstalled = Get-AppxProvisionedPackage -Path ".\mount"
+    foreach ($appName in @(
+        'clipchamp.clipchamp',
+        'Microsoft.549981C3F5F10',
+        'microsoft.microsoftteams',
+        'microsoft.skypeapp',
+        'microsoft.todos',
+        'microsoft.bingnews',
+        'microsoft.gethelp',
+        'microsoft.getstarted',
+        'microsoft.microsoft3dviewer',
+        'microsoft.microsoftofficehub',
+        'microsoft.microsoftsolitairecollection',
+        'microsoft.microsoftstickynotes',
+        'microsoft.mixedreality.portal',
+        'microsoft.mspaint',
+        'microsoft.office.onenote',
+        'microsoft.OutlookForWindows',
+        'microsoft.people',
+        'microsoft.powerautomatedesktop',
+        'microsoft.windowsfeedbackhub',
+        'microsoft.windowsmaps',
+        'microsoft.yourphone',
+        'microsoft.zunemusic',
+        'microsoft.zunevideo',
+        'microsoft.xboxapp',
+        'MicrosoftCorporationII.MicrosoftFamily',
+        'MicrosoftTeams'
+        'MSTeams'
+    )) {
+        $preinstalled | 
+            Where-Object {$_.packagename -like "*$appName*"} | 
+                Remove-AppxProvisionedPackage -Path ".\mount" -ErrorAction SilentlyContinue 
+    }
+    # disable default wd
+    Get-WindowsOptionalFeature -Path ".\mount" | Where-Object {$_.FeatureName -like "*Defender*"} | Disable-WindowsOptionalFeature
 }
-
-# disable default wd
-Get-WindowsOptionalFeature -Path ".\mount" | Where-Object {$_.FeatureName -like "*Defender*"} | Disable-WindowsOptionalFeature
 
 # write version
 "${sysvercn}_${sysdate} 
