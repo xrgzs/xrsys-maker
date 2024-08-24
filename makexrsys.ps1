@@ -127,6 +127,7 @@ switch ($makeversion) {
         $osarch = 'x64'
         $sysver = "XRSYS_Win7_SP2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win7_SP2_专业_x64_完整"
+        Invoke-WebRequest https://c.xrgzs.top/unattend/764bit.xml -OutFile .\unattend.xml
     }
     Default {
         Write-Error "Unknown version.
