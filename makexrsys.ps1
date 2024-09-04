@@ -314,7 +314,8 @@ if ([int]$osver -ge 10) {
         'microsoft.zunevideo',
         'microsoft.xboxapp',
         'MicrosoftCorporationII.MicrosoftFamily',
-        'MicrosoftTeams'
+        'MicrosoftTeams',
+        'MicrosoftWindows.Client.WebExperience',
         'MSTeams'
     )) {
         $preinstalled | 
