@@ -234,60 +234,71 @@ if ($osfileext -eq ".iso") {
             $osfilename = "install"
             $osfileext = ".esd"
         } else {
-            Write-Error "extract iso or esd failed!"
+            Write-Error "extract wim or esd failed!"
         }
     }
 }
 # convert esd to wim
-if ($osfileext -eq ".esd") {
-    .\bin\wimlib\wimlib-imagex.exe export "$osfile" all "$osfilename.wim" --compress fast
-}
+# if ($osfileext -eq ".esd") {
+#     .\bin\wimlib\wimlib-imagex.exe export "$osfile" all "$osfilename.wim" --compress fast
+# }
 
 # make xrsys image
-# mount image
-New-Item -Path ".\mount\" -ItemType "directory" -ErrorAction SilentlyContinue 
-Write-Host "Mounting $osfilename.wim, please wait..."
-Mount-WindowsImage -ImagePath "$osfilename.wim" -Index $osindex -Path "mount"
+# Create virtual disk
+$vhdfile = Join-Path -Path (Get-Location) -ChildPath "sys.vhdx"
+Remove-Item $vhdfile -ErrorAction SilentlyContinue 
+@"CREATE VDISK FILE="$vhdfile" MAXIMUM=102400 TYPE=EXPANDABLE
+SELECT VDISK FILE="$vhdfile"
+ATTACH VDISK
+CREATE PARTITION PRIMARY
+FORMAT FS=NTFS QUICK
+ASSIGN LETTER=S"@ | diskpart.exe
+if ($?) {Write-Host "Create virtual disk Successfully!"} else {Write-Error "Create virtual disk Failed!"}
+$mountDir = "S:"
+
+# extract imagefile use wimlib-imagex
+Write-Host "Extracting $osfile, please wait..."
+.\bin\wimlib\wimlib-imagex.exe apply "$osfile" $osindex "$mountDir"
 # inject deploy
-Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath ".\mount" -Force
-.\bin\aria2c.exe --check-certificate=false -s4 -x4 -d .\mount -o osc.exe "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
+Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
+.\bin\aria2c.exe --check-certificate=false -s4 -x4 -d $mountDir -o osc.exe "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
 if ($?) {Write-Host "XRSYS-OSC Download Successfully!"} else {Write-Error "XRSYS-OSC Download Failed!"}
-Copy-Item -Path ".\injectdeploy.bat" -Destination ".\mount" -Force
-Copy-Item -Path ".\unattend.xml" -Destination ".\mount" -Force
-.\mount\injectdeploy.bat /S
+Copy-Item -Path ".\injectdeploy.bat" -Destination "$mountDir" -Force
+Copy-Item -Path ".\unattend.xml" -Destination "$mountDir" -Force
+$mountDir\injectdeploy.bat /S
 if ($?) {Write-Host "Inject Deploy Successfully!"} else {Write-Error "Inject Deploy Failed!"}
-Remove-Item -Path ".\mount\injectdeploy.bat" -ErrorAction SilentlyContinue 
+Remove-Item -Path "$mountDir\injectdeploy.bat" -ErrorAction SilentlyContinue 
 
 # add drivers
 .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$osdrvurl"
 if ($?) {Write-Host "Driver Download Successfully!"} else {Write-Error "Driver Download Failed!"}
 $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 # $isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter
-# Copy-Item -Path "${isomount}:\" -Destination ".\mount\Windows\WinDrive" -Recurse -Force -ErrorAction SilentlyContinue 
+# Copy-Item -Path "${isomount}:\" -Destination "$mountDir\Windows\WinDrive" -Recurse -Force -ErrorAction SilentlyContinue 
 # Dismount-DiskImage -ImagePath $isopath 
-."C:\Program Files\7-Zip\7z.exe" x -r -y ".\temp\drivers.iso" -o".\mount\Windows\WinDrive"
+."C:\Program Files\7-Zip\7z.exe" x -r -y ".\temp\drivers.iso" -o"$mountDir\Windows\WinDrive"
 Remove-Item -Path $isopath -ErrorAction SilentlyContinue 
 
 # add software pack
 # .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o pack.7z "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/pack64.7z"
-# ."C:\Program Files\7-Zip\7z.exe" x -r -y -p123 ".\temp\pack.7z" -o".\mount\Windows\Setup\Set\osc"
+# ."C:\Program Files\7-Zip\7z.exe" x -r -y -p123 ".\temp\pack.7z" -o"$mountDir\Windows\Setup\Set\osc"
 # if ($?) {Write-Host "software pack Download Successfully!"} else {Write-Error "software pack Download Failed!"}
 # Remove-Item -Path ".\temp\pack.7z" -ErrorAction SilentlyContinue 
-# Remove-Item -Path ".\mount\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction SilentlyContinue 
+# Remove-Item -Path "$mountDir\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction SilentlyContinue 
 if ([int]$osver -ge 10) {
     # add edge runtime Windows 10+ 
     $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json)."msedge-stable-win-$osarch"
-    .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\osc\runtime\Edge -o "$($msedge.文件名)" "$($msedge.下载链接)"
+    .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -o "$($msedge.文件名)" "$($msedge.下载链接)"
     if ($?) {Write-Host "Edge Download Successfully!"} else {Write-Error "Edge Download Failed!"}
 }
-.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\mount\Windows\Setup\Set\Run -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
+.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\Run" -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
 if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRSYS-Tools Download Failed!"}
 # add tag
-# "isxrsys" > ".\mount\Windows\Setup\zjsoftonlinexrsys.txt"
+# "isxrsys" > "$mountDir\Windows\Setup\zjsoftonlinexrsys.txt"
 
 # remove preinstalled appx
 if ([int]$osver -ge 10) {
-    $preinstalled = Get-AppxProvisionedPackage -Path ".\mount"
+    $preinstalled = Get-AppxProvisionedPackage -Path "$mountDir"
     foreach ($appName in @(
         'clipchamp.clipchamp',
         'Microsoft.549981C3F5F10',
@@ -320,28 +331,33 @@ if ([int]$osver -ge 10) {
     )) {
         $preinstalled | 
             Where-Object {$_.packagename -like "*$appName*"} | 
-                Remove-AppxProvisionedPackage -Path ".\mount" -ErrorAction SilentlyContinue 
+                Remove-AppxProvisionedPackage -Path "$mountDir" -ErrorAction SilentlyContinue 
     }
     # disable default wd
-    Get-WindowsOptionalFeature -Path ".\mount" | Where-Object {$_.FeatureName -like "*Defender*"} | Disable-WindowsOptionalFeature
+    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object {$_.FeatureName -like "*Defender*"} | Disable-WindowsOptionalFeature
 }
 
 # write version
 "${sysvercn}_${sysdate} 
 ${sysver}_${sysdate}
-" | Out-File -FilePath ".\mount\Windows\Version.txt" -Encoding gbk
+" | Out-File -FilePath "$mountDir\Windows\Version.txt" -Encoding gbk
 
 # capture system image
-Write-Host "Packing $sysfile.wim, please wait..."
-New-WindowsImage -ImagePath ".\$sysfile.wim" -CapturePath ".\mount" -Name $sysver -Description $sysvercn
+# Write-Host "Packing $sysfile.wim, please wait..."
+# New-WindowsImage -ImagePath ".\$sysfile.wim" -CapturePath "$mountDir" -Name $sysver -Description $sysvercn
+.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysfile.esd" "$sysver" "$sysvercn"
+if ($?) { Write-Host "Capture Successfully!"} else {Write-Error "Capture Failed!"}
 
 # clean up mount dir
-# Dismount-DiskImage -Path ".\mount" -Discard
-# I am irresponsible
+# Dismount-DiskImage -Path "$mountDir" -Discard
+@"SELECT VDISK FILE="$vhdfile"
+DETACH VDISK"  | diskpart.exe
+if ($?) { Write-Host "Clean Up Successfully!"} else {Write-Error "Clean Up Failed!"}
+Remove-Item $vhdfile -Force -ErrorAction SilentlyContinue
 
 # convert to esd
-.\bin\wimlib\wimlib-imagex.exe export "$sysfile.wim" all "$sysfile.esd" --solid
-if ($?) { Write-Host "Convert Successfully!"} else {Write-Error "Convert Failed!"}
+# .\bin\wimlib\wimlib-imagex.exe export "$sysfile.wim" all "$sysfile.esd" --solid
+# if ($?) { Write-Host "Convert Successfully!"} else {Write-Error "Convert Failed!"}
 
 # Get file information
 $sysfilebyte = (Get-ItemProperty ".\$sysfile.esd").Length
