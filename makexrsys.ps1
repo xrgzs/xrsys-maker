@@ -247,12 +247,14 @@ if ($osfileext -eq ".iso") {
 # Create virtual disk
 $vhdfile = Join-Path -Path (Get-Location) -ChildPath "sys.vhdx"
 Remove-Item $vhdfile -ErrorAction SilentlyContinue 
-@"CREATE VDISK FILE="$vhdfile" MAXIMUM=102400 TYPE=EXPANDABLE
+@"
+CREATE VDISK FILE="$vhdfile" MAXIMUM=102400 TYPE=EXPANDABLE
 SELECT VDISK FILE="$vhdfile"
 ATTACH VDISK
 CREATE PARTITION PRIMARY
 FORMAT FS=NTFS QUICK
-ASSIGN LETTER=S"@ | diskpart.exe
+ASSIGN LETTER=S
+"@ | diskpart.exe
 if ($?) {Write-Host "Create virtual disk Successfully!"} else {Write-Error "Create virtual disk Failed!"}
 $mountDir = "S:"
 
@@ -350,8 +352,10 @@ if ($?) { Write-Host "Capture Successfully!"} else {Write-Error "Capture Failed!
 
 # clean up mount dir
 # Dismount-DiskImage -Path "$mountDir" -Discard
-@"SELECT VDISK FILE="$vhdfile"
-DETACH VDISK"  | diskpart.exe
+@"
+SELECT VDISK FILE="$vhdfile"
+DETACH VDISK
+"@  | diskpart.exe
 if ($?) { Write-Host "Clean Up Successfully!"} else {Write-Error "Clean Up Failed!"}
 Remove-Item $vhdfile -Force -ErrorAction SilentlyContinue
 
