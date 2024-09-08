@@ -347,7 +347,7 @@ ${sysver}_${sysdate}
 # capture system image
 # Write-Host "Packing $sysfile.wim, please wait..."
 # New-WindowsImage -ImagePath ".\$sysfile.wim" -CapturePath "$mountDir" -Name $sysver -Description $sysvercn
-.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysfile.esd" "$sysver" "$sysvercn"
+.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysfile.esd" "$sysver" "$sysvercn" --solid
 if ($?) { Write-Host "Capture Successfully!"} else {Write-Error "Capture Failed!"}
 
 # clean up mount dir
