@@ -267,7 +267,7 @@ Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
 if ($?) {Write-Host "XRSYS-OSC Download Successfully!"} else {Write-Error "XRSYS-OSC Download Failed!"}
 Copy-Item -Path ".\injectdeploy.bat" -Destination "$mountDir" -Force
 Copy-Item -Path ".\unattend.xml" -Destination "$mountDir" -Force
-$mountDir\injectdeploy.bat /S
+& "$mountDir\injectdeploy.bat" /S
 if ($?) {Write-Host "Inject Deploy Successfully!"} else {Write-Error "Inject Deploy Failed!"}
 Remove-Item -Path "$mountDir\injectdeploy.bat" -ErrorAction SilentlyContinue 
 
