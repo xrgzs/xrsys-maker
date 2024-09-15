@@ -212,7 +212,7 @@ if (-not (Test-Path -Path ".\bin\rclone.exe")) {
 }
 
 Remove-Item -Path $osfile -Force -ErrorAction SilentlyContinue 
-.\bin\aria2c.exe --check-certificate=false -s16 -x16 -o "$osfile" "$osurl"
+.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -o "$osfile" "$osurl"
 if ($?) {Write-Host "System Image Download Successfully!"} else {Write-Error "System Image Download Failed!"}
 
 $osfileext = [System.IO.Path]::GetExtension("$osfile")
@@ -263,7 +263,7 @@ Write-Host "Extracting $osfile, please wait..."
 .\bin\wimlib\wimlib-imagex.exe apply "$osfile" $osindex "$mountDir"
 # inject deploy
 Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
-.\bin\aria2c.exe --check-certificate=false -s4 -x4 -d $mountDir -o osc.exe "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
+.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s4 -x4 -d $mountDir -o osc.exe "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
 if ($?) {Write-Host "XRSYS-OSC Download Successfully!"} else {Write-Error "XRSYS-OSC Download Failed!"}
 Copy-Item -Path ".\injectdeploy.bat" -Destination "$mountDir" -Force
 Copy-Item -Path ".\unattend.xml" -Destination "$mountDir" -Force
@@ -272,7 +272,7 @@ if ($?) {Write-Host "Inject Deploy Successfully!"} else {Write-Error "Inject Dep
 Remove-Item -Path "$mountDir\injectdeploy.bat" -ErrorAction SilentlyContinue 
 
 # add drivers
-.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$osdrvurl"
+.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$osdrvurl"
 if ($?) {Write-Host "Driver Download Successfully!"} else {Write-Error "Driver Download Failed!"}
 $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 # $isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter
@@ -282,7 +282,7 @@ $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 Remove-Item -Path $isopath -ErrorAction SilentlyContinue 
 
 # add software pack
-# .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d .\temp -o pack.7z "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/pack64.7z"
+# .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d .\temp -o pack.7z "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/pack64.7z"
 # ."C:\Program Files\7-Zip\7z.exe" x -r -y -p123 ".\temp\pack.7z" -o"$mountDir\Windows\Setup\Set\osc"
 # if ($?) {Write-Host "software pack Download Successfully!"} else {Write-Error "software pack Download Failed!"}
 # Remove-Item -Path ".\temp\pack.7z" -ErrorAction SilentlyContinue 
@@ -290,10 +290,10 @@ Remove-Item -Path $isopath -ErrorAction SilentlyContinue
 if ([int]$osver -ge 10) {
     # add edge runtime Windows 10+ 
     $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json)."msedge-stable-win-$osarch"
-    .\bin\aria2c.exe --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -o "$($msedge.文件名)" "$($msedge.下载链接)"
+    .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -o "$($msedge.文件名)" "$($msedge.下载链接)"
     if ($?) {Write-Host "Edge Download Successfully!"} else {Write-Error "Edge Download Failed!"}
 }
-.\bin\aria2c.exe --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\Run" -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
+.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\Run" -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
 if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRSYS-Tools Download Failed!"}
 # add tag
 # "isxrsys" > "$mountDir\Windows\Setup\zjsoftonlinexrsys.txt"
