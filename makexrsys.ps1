@@ -330,6 +330,7 @@ if ([int]$osver -ge 10) {
         'MicrosoftTeams',
         'MicrosoftWindows.Client.WebExperience',
         'Microsoft.WidgetsPlatformRuntime',
+        'Microsoft.Windows.DevHome',
         'MSTeams'
     )) {
         $preinstalled | 
