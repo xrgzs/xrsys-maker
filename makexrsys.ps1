@@ -308,6 +308,7 @@ if ([int]$osver -ge 10) {
         'microsoft.skypeapp',
         'microsoft.todos',
         'microsoft.bingnews',
+        'microsoft.bingweather',
         'microsoft.gethelp',
         'microsoft.getstarted',
         'microsoft.microsoft3dviewer',
