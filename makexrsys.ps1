@@ -340,6 +340,7 @@ if ([int]$osver -ge 10) {
     }
     # disable default wd
     Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object {$_.FeatureName -like "*Defender*"} | Disable-WindowsOptionalFeature
+    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object {$_.FeatureName -like "*Recall*"} | Disable-WindowsOptionalFeature
 }
 
 # write version
