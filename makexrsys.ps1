@@ -328,6 +328,7 @@ if ([int]$osver -ge 10) {
         'microsoft.zunemusic',
         'microsoft.zunevideo',
         'microsoft.xboxapp',
+        'Microsoft.Wallet',
         'MicrosoftCorporationII.MicrosoftFamily',
         'MicrosoftTeams',
         'MicrosoftWindows.Client.WebExperience',
