@@ -334,7 +334,11 @@ if ([int]$osver -ge 10) {
         'MicrosoftWindows.Client.WebExperience',
         'Microsoft.WidgetsPlatformRuntime',
         'Microsoft.Windows.DevHome',
-        'MSTeams'
+        'MSTeams',
+        'Microsoft.XboxGamingOverlay',
+        'Microsoft.XboxSpeechToTextOverlay',
+        'Microsoft.XboxIdentityProvider',
+        'Microsoft.Xbox.TCUI'
     )) {
         $preinstalled | 
             Where-Object {$_.packagename -like "*$appName*"} | 
