@@ -118,7 +118,7 @@ switch ($makeversion) {
         $sysvercn = "潇然系统_Win10_LTSB2016_企业S_x64_完整"
     }
     "w7pro64" {
-        $obj = (Invoke-RestMethod https://c.xrgzs.top/OSList.json).'【更新-fch1993】Ser2008R2_IE11_数据中心_64位_无驱动_原版无接管'
+        $obj = (Invoke-RestMethod https://c.xrgzs.top/OSList.json).'【更新】7_SP1_IE11_自选_64位_无驱动_原版无接管'
         $osurl = $obj.osurl2
         $osfile = $obj.osfile
         $osindex = 3
