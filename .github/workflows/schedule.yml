@@ -12,9 +12,12 @@ jobs:
       fail-fast: false
       matrix:
         makeversion: 
+          - w1124h2a64
           - w1124h264
+          - w1123h2a64
           - w1123h264
           - w1022h264
+          - w11lt24a64
           - w11lt2464
           - w10lt2164
           - w10lt1964
@@ -23,6 +26,14 @@ jobs:
         isosd: 
           - true
           - false
+        # no arm64 isosd
+        exclude:
+          - makeversion: w1124h2a64
+            isosd: true
+          - makeversion: w1123h2a64
+            isosd: true
+          - makeversion: w11lt24a64
+            isosd: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

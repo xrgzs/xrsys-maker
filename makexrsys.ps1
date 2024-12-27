@@ -34,6 +34,18 @@ function Get-OsBySearch {
 
 # set original system info
 switch ($makeversion) {
+    "w1124h2a64" {
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/24H2/latest_arm64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 4
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
+        $osarch = $obj.os_arch
+        $sysver = "XRSYS_Win11_24H2_Pro_ARM64_CN_Full"
+        $sysvercn = "潇然系统_Win11_24H2_专业_ARM64_完整"
+        Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
+    }
     "w1124h264" {
         $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/24H2/latest_x64.json").Content | ConvertFrom-Json
         $osurl = "$server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
@@ -44,6 +56,18 @@ switch ($makeversion) {
         $osarch = $obj.os_arch
         $sysver = "XRSYS_Win11_24H2_Pro_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_24H2_专业_x64_完整"
+    }
+    "w1123h2a64" {
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/23H2/latest_arm64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 4
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
+        $osarch = $obj.os_arch
+        $sysver = "XRSYS_Win11_23H2_Pro_ARM64_CN_Full"
+        $sysvercn = "潇然系统_Win11_23H2_专业_ARM64_完整"
+        Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w1123h264" {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
@@ -83,6 +107,18 @@ switch ($makeversion) {
         $osarch = $obj.os_arch
         $sysver = "XRSYS_Win11_LTSC2024_EntS_x64_CN_Full"
         $sysvercn = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
+    }
+    "w11lt24a64" {
+        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_arm64.json").Content | ConvertFrom-Json
+        $osurl = "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $osfile = $obj.name
+        $osindex = 1
+        $osver = $obj.os_ver
+        $osversion = $obj.os_version
+        $osarch = $obj.os_arch
+        $sysver = "XRSYS_Win11_LTSC2024_EntS_ARM64_CN_Full"
+        $sysvercn = "潇然系统_Win11_LTSC2024_企业S_ARM64_完整"
+        Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w10lt2164" {
         $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/latest_x64.json").Content | ConvertFrom-Json
@@ -162,6 +198,8 @@ if ($isosd -eq $true) {
 if ($null -eq $osdrvurl) {
     if ($osarch -eq "x64" -and [float]$osversion -ge 19041.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10x64.iso"
+    } elseif ($osarch -eq "arm64" -and [float]$osversion -ge 19041.0) {
+        $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10a64.iso"
     } elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
     } elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
