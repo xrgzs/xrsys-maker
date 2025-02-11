@@ -1,9 +1,9 @@
 name: MakeXRSYS
-run-name: Make XRSYS ${{ inputs.makeversion }}
+run-name: Make XRSYS ${{ inputs.target }}${{ inputs.fulldrv == true && ' - Full Drivers' || ' - Lite Drivers' }}
 on:
   workflow_dispatch:
     inputs:
-      makeversion:
+      target:
         description: 'Target OS Version'
         required: true
         type: choice
@@ -19,8 +19,8 @@ on:
           - w10lt1964
           - w10lt1664
           - w7pro64
-      isosd:
-        description: 'Add DrvCeo'
+      fulldrv:
+        description: 'Add Full Drivers'
         required: false
         default: false
         type: boolean
@@ -53,6 +53,4 @@ jobs:
       - name: Big Task
         shell: pwsh
         run: |
-          $makeversion = [string] "${{ inputs.makeversion }}"
-          $isosd       = [bool] $${{ inputs.isosd }}
-          .\makexrsys.ps1
+          .\makexrsys.ps1 -Target "${{ inputs.target }}" ${{ inputs.fulldrv == true && '-FullDrv' || '' }}

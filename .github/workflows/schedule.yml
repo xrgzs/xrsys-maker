@@ -8,10 +8,11 @@ on:
 jobs:
   makexrsys:
     runs-on: windows-latest
+    name: ${{ matrix.target }}${{ matrix.fulldrv == true && '-fulldrv' || '' }}
     strategy:
       fail-fast: false
       matrix:
-        makeversion: 
+        target: 
           - w1124h2a64
           - w1124h264
           - w1123h2a64
@@ -23,17 +24,17 @@ jobs:
           - w10lt1964
           - w10lt1664
           - w7pro64
-        isosd: 
+        fulldrv: 
           - true
           - false
-        # no arm64 isosd
+        # no arm64 fulldrv
         exclude:
-          - makeversion: w1124h2a64
-            isosd: true
-          - makeversion: w1123h2a64
-            isosd: true
-          - makeversion: w11lt24a64
-            isosd: true
+          - target: w1124h2a64
+            fulldrv: true
+          - target: w1123h2a64
+            fulldrv: true
+          - target: w11lt24a64
+            fulldrv: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -59,6 +60,4 @@ jobs:
       - name: Big Task
         shell: pwsh
         run: |
-          $makeversion = [string] "${{ matrix.makeversion }}"
-          $isosd       = [bool] $${{ matrix.isosd }}
-          .\makexrsys.ps1
+          .\makexrsys.ps1 -Target "${{ matrix.target }}" ${{ matrix.fulldrv == true && '-FullDrv' || '' }}

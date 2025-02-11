@@ -1,3 +1,18 @@
+<#
+.SYNOPSIS
+Xiaoran System Image Builder
+
+.DESCRIPTION
+Build Windows image file with xrsys-osc, drivers and custom configurations.
+#>
+
+param(
+    # Setting the target version to make
+    [string]$Target,
+
+    [switch]$FullDrv
+)
+
 $ErrorActionPreference = 'Stop'
 $server = "https://alist.xrgzs.top"
 
@@ -33,7 +48,7 @@ function Get-OsBySearch {
 }
 
 # set original system info
-switch ($makeversion) {
+switch ($Target) {
     "w1124h2a64" {
         $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/24H2/latest_arm64.json").Content | ConvertFrom-Json
         $osurl = "$server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
@@ -166,15 +181,11 @@ switch ($makeversion) {
         Invoke-WebRequest https://c.xrgzs.top/unattend/764bit.xml -OutFile .\unattend.xml
     }
     Default {
-        Write-Error "Unknown version.
-        Example:
-            `$makeversion = [string] `"w1123h264`"
-            .\makexrsys.ps1
-        "
+        Write-Error "Unknown version."
     }
 }
 
-if ($isosd -eq $true) {
+if ($FullDrv) {
     if ($osarch -eq "x64" -and [float]$osversion -ge 16299.0) {
         # DCH x64
         $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_Win11_x64_Lite.iso"
