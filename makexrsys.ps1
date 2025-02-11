@@ -8,24 +8,24 @@ function Get-OsBySearch {
     )
     # parse server file list
     $obj1 = (Invoke-WebRequest -Uri "$server/api/fs/list" `
-    -Method "POST" `
-    -ContentType "application/json;charset=UTF-8" `
-    -Body (@{
-        path = $Path
-        page = 1
-        password = ""
-        per_page = 0
-        refresh = $false
-    } | Convertto-Json)).Content | ConvertFrom-Json
+            -Method "POST" `
+            -ContentType "application/json;charset=UTF-8" `
+            -Body (@{
+                path     = $Path
+                page     = 1
+                password = ""
+                per_page = 0
+                refresh  = $false
+            } | Convertto-Json)).Content | ConvertFrom-Json
     
     # get original system direct link
     $obj2 = (Invoke-WebRequest -UseBasicParsing -Uri "$server/api/fs/get" `
-    -Method "POST" `
-    -ContentType "application/json;charset=UTF-8" `
-    -Body (@{
-        path = $Path+'/'+($obj1.data.content | Where-Object -Property Name -Like $Search).name
-        password = ""
-    } | Convertto-Json)).Content | ConvertFrom-Json
+            -Method "POST" `
+            -ContentType "application/json;charset=UTF-8" `
+            -Body (@{
+                path     = $Path + '/' + ($obj1.data.content | Where-Object -Property Name -Like $Search).name
+                password = ""
+            } | Convertto-Json)).Content | ConvertFrom-Json
     $out = @{}
     $out.osurl = $obj2.data.raw_url
     $out.osfile = $obj2.data.name
@@ -178,16 +178,20 @@ if ($isosd -eq $true) {
     if ($osarch -eq "x64" -and [float]$osversion -ge 16299.0) {
         # DCH x64
         $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_Win11_x64_Lite.iso"
-    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
+    }
+    elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
         # noDCH x64
         $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_noDCH_x64_Lite.iso"
-    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
+    }
+    elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
         # Win7 x64
         $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x64_Lite.iso"
-    } elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
+    }
+    elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
         # Win7 x86
         $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x86_Lite.iso"
-    } else {
+    }
+    else {
         Write-Error "Cannot match related driver iso."
     }
     $sysver = $sysver + "_DrvCeo"
@@ -198,15 +202,20 @@ if ($isosd -eq $true) {
 if ($null -eq $osdrvurl) {
     if ($osarch -eq "x64" -and [float]$osversion -ge 19041.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10x64.iso"
-    } elseif ($osarch -eq "arm64" -and [float]$osversion -ge 19041.0) {
+    }
+    elseif ($osarch -eq "arm64" -and [float]$osversion -ge 19041.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10a64.iso"
-    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
+    }
+    elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
-    } elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
+    }
+    elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin7x64.iso"
-    } elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
+    }
+    elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
         $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin7x86.iso"
-    } else {
+    }
+    else {
         Write-Error "Cannot match related driver iso."
     }
     $sysver = $sysver + "_Net"
@@ -251,7 +260,7 @@ if (-not (Test-Path -Path ".\bin\rclone.exe")) {
 
 Remove-Item -Path $osfile -Force -ErrorAction SilentlyContinue 
 .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -o "$osfile" "$osurl"
-if ($?) {Write-Host "System Image Download Successfully!"} else {Write-Error "System Image Download Failed!"}
+if ($?) { Write-Host "System Image Download Successfully!" } else { Write-Error "System Image Download Failed!" }
 
 $osfileext = [System.IO.Path]::GetExtension("$osfile")
 $osfilename = [System.IO.Path]::GetFileNameWithoutExtension("$osfile")
@@ -264,14 +273,16 @@ if ($osfileext -eq ".iso") {
         $osfile = "install.wim"
         $osfilename = "install"
         $osfileext = ".wim"
-    } else {
+    }
+    else {
         ."C:\Program Files\7-Zip\7z.exe" e -y "$osfile" sources\install.esd
         if (Test-Path -Path "install.esd") {
             Write-Host "extract esd Successfully!"
             $osfile = "install.esd"
             $osfilename = "install"
             $osfileext = ".esd"
-        } else {
+        }
+        else {
             Write-Error "extract wim or esd failed!"
         }
     }
@@ -293,7 +304,7 @@ CREATE PARTITION PRIMARY
 FORMAT FS=NTFS QUICK
 ASSIGN LETTER=S
 "@ | diskpart.exe
-if ($?) {Write-Host "Create virtual disk Successfully!"} else {Write-Error "Create virtual disk Failed!"}
+if ($?) { Write-Host "Create virtual disk Successfully!" } else { Write-Error "Create virtual disk Failed!" }
 $mountDir = "S:"
 
 # extract imagefile use wimlib-imagex
@@ -302,16 +313,16 @@ Write-Host "Extracting $osfile, please wait..."
 # inject deploy
 Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
 .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s4 -x4 -d $mountDir -o osc.exe "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
-if ($?) {Write-Host "XRSYS-OSC Download Successfully!"} else {Write-Error "XRSYS-OSC Download Failed!"}
+if ($?) { Write-Host "XRSYS-OSC Download Successfully!" } else { Write-Error "XRSYS-OSC Download Failed!" }
 Copy-Item -Path ".\injectdeploy.bat" -Destination "$mountDir" -Force
 Copy-Item -Path ".\unattend.xml" -Destination "$mountDir" -Force
 & "$mountDir\injectdeploy.bat" /S
-if ($?) {Write-Host "Inject Deploy Successfully!"} else {Write-Error "Inject Deploy Failed!"}
+if ($?) { Write-Host "Inject Deploy Successfully!" } else { Write-Error "Inject Deploy Failed!" }
 Remove-Item -Path "$mountDir\injectdeploy.bat" -ErrorAction SilentlyContinue 
 
 # add drivers
 .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$osdrvurl"
-if ($?) {Write-Host "Driver Download Successfully!"} else {Write-Error "Driver Download Failed!"}
+if ($?) { Write-Host "Driver Download Successfully!" } else { Write-Error "Driver Download Failed!" }
 $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 # $isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter
 # Copy-Item -Path "${isomount}:\" -Destination "$mountDir\Windows\WinDrive" -Recurse -Force -ErrorAction SilentlyContinue 
@@ -329,10 +340,10 @@ if ([int]$osver -ge 10) {
     # add edge runtime Windows 10+ 
     $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json)."msedge-stable-win-$osarch"
     .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -o "$($msedge.文件名)" "$($msedge.下载链接)"
-    if ($?) {Write-Host "Edge Download Successfully!"} else {Write-Error "Edge Download Failed!"}
+    if ($?) { Write-Host "Edge Download Successfully!" } else { Write-Error "Edge Download Failed!" }
 }
 .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\Run" -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
-if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRSYS-Tools Download Failed!"}
+if ($?) { Write-Host "XRSYS-Tools Download Successfully!" } else { Write-Error "XRSYS-Tools Download Failed!" }
 # add tag
 # "isxrsys" > "$mountDir\Windows\Setup\zjsoftonlinexrsys.txt"
 
@@ -340,51 +351,51 @@ if ($?) {Write-Host "XRSYS-Tools Download Successfully!"} else {Write-Error "XRS
 if ([int]$osver -ge 10) {
     $preinstalled = Get-AppxProvisionedPackage -Path "$mountDir"
     foreach ($appName in @(
-        'clipchamp.clipchamp',
-        'Microsoft.549981C3F5F10',
-        'microsoft.microsoftteams',
-        'microsoft.skypeapp',
-        'microsoft.todos',
-        'microsoft.bingnews',
-        'microsoft.bingweather',
-        'microsoft.windowscommunicationsapps',
-        'microsoft.gethelp',
-        'microsoft.getstarted',
-        'microsoft.microsoft3dviewer',
-        'microsoft.microsoftofficehub',
-        'microsoft.microsoftsolitairecollection',
-        'microsoft.microsoftstickynotes',
-        'microsoft.mixedreality.portal',
-        'microsoft.mspaint',
-        'microsoft.office.onenote',
-        'microsoft.OutlookForWindows',
-        'microsoft.people',
-        'microsoft.powerautomatedesktop',
-        'microsoft.windowsfeedbackhub',
-        'microsoft.windowsmaps',
-        'microsoft.yourphone',
-        'microsoft.zunemusic',
-        'microsoft.zunevideo',
-        'microsoft.xboxapp',
-        'Microsoft.Wallet',
-        'MicrosoftCorporationII.MicrosoftFamily',
-        'MicrosoftTeams',
-        'MicrosoftWindows.Client.WebExperience',
-        'Microsoft.WidgetsPlatformRuntime',
-        'Microsoft.Windows.DevHome',
-        'MSTeams',
-        'Microsoft.XboxGamingOverlay',
-        'Microsoft.XboxSpeechToTextOverlay',
-        'Microsoft.XboxIdentityProvider',
-        'Microsoft.Xbox.TCUI'
-    )) {
+            'clipchamp.clipchamp',
+            'Microsoft.549981C3F5F10',
+            'microsoft.microsoftteams',
+            'microsoft.skypeapp',
+            'microsoft.todos',
+            'microsoft.bingnews',
+            'microsoft.bingweather',
+            'microsoft.windowscommunicationsapps',
+            'microsoft.gethelp',
+            'microsoft.getstarted',
+            'microsoft.microsoft3dviewer',
+            'microsoft.microsoftofficehub',
+            'microsoft.microsoftsolitairecollection',
+            'microsoft.microsoftstickynotes',
+            'microsoft.mixedreality.portal',
+            'microsoft.mspaint',
+            'microsoft.office.onenote',
+            'microsoft.OutlookForWindows',
+            'microsoft.people',
+            'microsoft.powerautomatedesktop',
+            'microsoft.windowsfeedbackhub',
+            'microsoft.windowsmaps',
+            'microsoft.yourphone',
+            'microsoft.zunemusic',
+            'microsoft.zunevideo',
+            'microsoft.xboxapp',
+            'Microsoft.Wallet',
+            'MicrosoftCorporationII.MicrosoftFamily',
+            'MicrosoftTeams',
+            'MicrosoftWindows.Client.WebExperience',
+            'Microsoft.WidgetsPlatformRuntime',
+            'Microsoft.Windows.DevHome',
+            'MSTeams',
+            'Microsoft.XboxGamingOverlay',
+            'Microsoft.XboxSpeechToTextOverlay',
+            'Microsoft.XboxIdentityProvider',
+            'Microsoft.Xbox.TCUI'
+        )) {
         $preinstalled | 
-            Where-Object {$_.packagename -like "*$appName*"} | 
-                Remove-AppxProvisionedPackage -Path "$mountDir" -ErrorAction SilentlyContinue 
+        Where-Object { $_.packagename -like "*$appName*" } | 
+        Remove-AppxProvisionedPackage -Path "$mountDir" -ErrorAction SilentlyContinue 
     }
     # disable default wd
-    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object {$_.FeatureName -like "*Defender*"} | Disable-WindowsOptionalFeature
-    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object {$_.FeatureName -like "*Recall*"} | Disable-WindowsOptionalFeature
+    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object { $_.FeatureName -like "*Defender*" } | Disable-WindowsOptionalFeature
+    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object { $_.FeatureName -like "*Recall*" } | Disable-WindowsOptionalFeature
 }
 
 # write version
@@ -396,7 +407,7 @@ ${sysver}_${sysdate}
 # Write-Host "Packing $sysfile.wim, please wait..."
 # New-WindowsImage -ImagePath ".\$sysfile.wim" -CapturePath "$mountDir" -Name $sysver -Description $sysvercn
 .\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysfile.esd" "$sysver" "$sysvercn" --solid
-if ($?) { Write-Host "Capture Successfully!"} else {Write-Error "Capture Failed!"}
+if ($?) { Write-Host "Capture Successfully!" } else { Write-Error "Capture Failed!" }
 
 # clean up mount dir
 # Dismount-DiskImage -Path "$mountDir" -Discard
@@ -404,7 +415,7 @@ if ($?) { Write-Host "Capture Successfully!"} else {Write-Error "Capture Failed!
 SELECT VDISK FILE="$vhdfile"
 DETACH VDISK
 "@  | diskpart.exe
-if ($?) { Write-Host "Clean Up Successfully!"} else {Write-Error "Clean Up Failed!"}
+if ($?) { Write-Host "Clean Up Successfully!" } else { Write-Error "Clean Up Failed!" }
 Remove-Item $vhdfile -Force -ErrorAction SilentlyContinue
 
 # convert to esd
@@ -413,33 +424,33 @@ Remove-Item $vhdfile -Force -ErrorAction SilentlyContinue
 
 # Get file information
 $sysfilebyte = (Get-ItemProperty ".\$sysfile.esd").Length
-$sysfilesize = [Math]::Round($sysfilebyte / 1024 /1024 /1024, 2)
+$sysfilesize = [Math]::Round($sysfilebyte / 1024 / 1024 / 1024, 2)
 $sysfilemd5 = Get-FileHash ".\$sysfile.esd" -Algorithm MD5 | Select-Object -ExpandProperty Hash
 $sysfilesha256 = Get-FileHash ".\$sysfile.esd" -Algorithm SHA256 | Select-Object -ExpandProperty Hash
 @{
     "sys" = @{
-        "ver" = [string]$sysver
-        "vercn" = $sysvercn
-        "date" = $sysdate
+        "ver"      = [string]$sysver
+        "vercn"    = $sysvercn
+        "date"     = $sysdate
         "datefull" = $sysdatefull
-        "file" = "$sysfile.esd"
-        "size" = "$sysfilesize GB"
-        "byte" = $sysfilebyte
-        "md5" = $sysfilemd5
-        "sha256" = $sysfilesha256
-        "url" = "$server/d/pxy/Xiaoran%20Studio/System/Nightly/$sysdate/$sysfile.esd"
+        "file"     = "$sysfile.esd"
+        "size"     = "$sysfilesize GB"
+        "byte"     = $sysfilebyte
+        "md5"      = $sysfilemd5
+        "sha256"   = $sysfilesha256
+        "url"      = "$server/d/pxy/Xiaoran%20Studio/System/Nightly/$sysdate/$sysfile.esd"
     }
-    "os" = @{
-        "arch" = $osarch
-        "ver" = $osver
+    "os"  = @{
+        "arch"    = $osarch
+        "ver"     = $osver
         "version" = $osversion
-        "file" = $osfile
-        "index" = $osindex
+        "file"    = $osfile
+        "index"   = $osindex
     }
 } | ConvertTo-Json | Out-File -FilePath ".\$sysfile.json" -Encoding utf8
 
 # Publish image
 .\bin\rclone.exe copy "$sysfile.esd" "oofutech:/Xiaoran Studio/System/Nightly/$sysdate" --progress
-if ($?) {Write-Host "Upload Successfully!"} else {Write-Error "Upload Failed!"}
+if ($?) { Write-Host "Upload Successfully!" } else { Write-Error "Upload Failed!" }
 .\bin\rclone.exe copy "$sysfile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysdate" --progress
 .\bin\rclone.exe copyto "$sysfile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysver.json" --progress
