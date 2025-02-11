@@ -10,7 +10,11 @@ param(
     # Setting the target version to make
     [string]$Target,
 
-    [switch]$FullDrv
+    # Add Full Drivers
+    [switch]$FullDrv,
+
+    # Set as the latest version
+    [switch]$Latest
 )
 
 $ErrorActionPreference = 'Stop'
@@ -464,4 +468,7 @@ $sysFileSHA256 = Get-FileHash ".\$sysFile.esd" -Algorithm SHA256 | Select-Object
 .\bin\rclone.exe copy "$sysFile.esd" "oofutech:/Xiaoran Studio/System/Nightly/$sysDate" --progress
 if ($?) { Write-Host "Upload Successfully!" } else { Write-Error "Upload Failed!" }
 .\bin\rclone.exe copy "$sysFile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysDate" --progress
-.\bin\rclone.exe copyto "$sysFile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysVer.json" --progress
+# Set latest
+if ($Latest) {
+    .\bin\rclone.exe copyto "$sysFile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysVer.json" --progress
+}

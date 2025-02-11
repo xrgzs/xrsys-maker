@@ -1,5 +1,5 @@
 name: MakeXRSYS
-run-name: Make XRSYS ${{ inputs.target }}${{ inputs.fulldrv == true && ' - Full Drivers' || ' - Lite Drivers' }}
+run-name: Make XRSYS ${{ inputs.target }}${{ inputs.fulldrv == true && ' - Full Drivers' || ' - Lite Drivers' }}${{ inputs.latest == true && ' - Latest' || '' }}
 on:
   workflow_dispatch:
     inputs:
@@ -21,6 +21,11 @@ on:
           - w7pro64
       fulldrv:
         description: 'Add Full Drivers'
+        required: false
+        default: false
+        type: boolean
+      latest:
+        description: 'As Latest'
         required: false
         default: false
         type: boolean
@@ -53,4 +58,4 @@ jobs:
       - name: Big Task
         shell: pwsh
         run: |
-          .\makexrsys.ps1 -Target "${{ inputs.target }}" ${{ inputs.fulldrv == true && '-FullDrv' || '' }}
+          .\makexrsys.ps1 -Target "${{ inputs.target }}" ${{ inputs.fulldrv == true && '-FullDrv' || '' }} ${{ inputs.latest == true && '-Latest' || '' }}

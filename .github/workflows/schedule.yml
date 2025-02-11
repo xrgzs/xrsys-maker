@@ -60,4 +60,4 @@ jobs:
       - name: Big Task
         shell: pwsh
         run: |
-          .\makexrsys.ps1 -Target "${{ matrix.target }}" ${{ matrix.fulldrv == true && '-FullDrv' || '' }}
+          .\makexrsys.ps1 -Target "${{ matrix.target }}" -Latest ${{ matrix.fulldrv == true && '-FullDrv' || '' }}
