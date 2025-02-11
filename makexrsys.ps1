@@ -14,7 +14,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$server = "https://alist.xrgzs.top"
+$Server = "https://alist.xrgzs.top"
 
 function Get-OsBySearch {
     param (
@@ -22,7 +22,7 @@ function Get-OsBySearch {
         $Search
     )
     # parse server file list
-    $obj1 = (Invoke-WebRequest -Uri "$server/api/fs/list" `
+    $obj1 = (Invoke-WebRequest -Uri "$Server/api/fs/list" `
             -Method "POST" `
             -ContentType "application/json;charset=UTF-8" `
             -Body (@{
@@ -34,7 +34,7 @@ function Get-OsBySearch {
             } | Convertto-Json)).Content | ConvertFrom-Json
     
     # get original system direct link
-    $obj2 = (Invoke-WebRequest -UseBasicParsing -Uri "$server/api/fs/get" `
+    $obj2 = (Invoke-WebRequest -UseBasicParsing -Uri "$Server/api/fs/get" `
             -Method "POST" `
             -ContentType "application/json;charset=UTF-8" `
             -Body (@{
@@ -50,134 +50,134 @@ function Get-OsBySearch {
 # set original system info
 switch ($Target) {
     "w1124h2a64" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/24H2/latest_arm64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 4
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win11_24H2_Pro_ARM64_CN_Full"
-        $sysvercn = "潇然系统_Win11_24H2_专业_ARM64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/24H2/latest_arm64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 4
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_24H2_Pro_ARM64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_24H2_专业_ARM64_完整"
         Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w1124h264" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/24H2/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 4
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win11_24H2_Pro_x64_CN_Full"
-        $sysvercn = "潇然系统_Win11_24H2_专业_x64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/24H2/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 4
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_24H2_Pro_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_24H2_专业_x64_完整"
     }
     "w1123h2a64" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/23H2/latest_arm64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 4
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win11_23H2_Pro_ARM64_CN_Full"
-        $sysvercn = "潇然系统_Win11_23H2_专业_ARM64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/23H2/latest_arm64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 4
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_23H2_Pro_ARM64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_23H2_专业_ARM64_完整"
         Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w1123h264" {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
         # $osurl = $obj.osurl
-        # $osfile = $obj.osfile
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/23H2/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 4
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win11_23H2_Pro_x64_CN_Full"
-        $sysvercn = "潇然系统_Win11_23H2_专业_x64_完整"
+        # $osFile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/23H2/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 4
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_23H2_Pro_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_23H2_专业_x64_完整"
     }
     "w1022h264" {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
         # $osurl = $obj.osurl
-        # $osfile = $obj.osfile
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/22H2/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 4
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win10_22H2_Pro_x64_CN_Full"
-        $sysvercn = "潇然系统_Win10_22H2_专业_x64_完整"
+        # $osFile = $obj.osfile
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/22H2/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 4
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win10_22H2_Pro_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win10_22H2_专业_x64_完整"
     }
     "w11lt2464" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 1
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win11_LTSC2024_EntS_x64_CN_Full"
-        $sysvercn = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 1
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_LTSC2024_EntS_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
     }
     "w11lt24a64" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_arm64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 1
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win11_LTSC2024_EntS_ARM64_CN_Full"
-        $sysvercn = "潇然系统_Win11_LTSC2024_企业S_ARM64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_arm64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 1
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_LTSC2024_EntS_ARM64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_LTSC2024_企业S_ARM64_完整"
         Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w10lt2164" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 1
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win10_LTSC2021_EntS_x64_CN_Full"
-        $sysvercn = "潇然系统_Win10_LTSC2021_企业S_x64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/LTSC2021/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 1
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win10_LTSC2021_EntS_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win10_LTSC2021_企业S_x64_完整"
     }
     "w10lt1964" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSC2019/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 1
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win10_LTSC2019_EntS_x64_CN_Full"
-        $sysvercn = "潇然系统_Win10_LTSC2019_企业S_x64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/LTSC2019/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 1
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win10_LTSC2019_EntS_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win10_LTSC2019_企业S_x64_完整"
     }
     "w10lt1664" {
-        $obj = (Invoke-WebRequest -Uri "$server/d/mount/oofutech/MSUpdate/10/LTSB2016/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$server/d/mount/oofutech/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
-        $osfile = $obj.name
-        $osindex = 1
-        $osver = $obj.os_ver
-        $osversion = $obj.os_version
-        $osarch = $obj.os_arch
-        $sysver = "XRSYS_Win10_LTSB2016_EntS_x64_CN_Full"
-        $sysvercn = "潇然系统_Win10_LTSB2016_企业S_x64_完整"
+        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/LTSB2016/latest_x64.json").Content | ConvertFrom-Json
+        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
+        $osFile = $obj.name
+        $osIndex = 1
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win10_LTSB2016_EntS_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win10_LTSB2016_企业S_x64_完整"
     }
     "w7pro64" {
         $obj = (Invoke-RestMethod https://c.xrgzs.top/OSList.json).'【更新】7_SP1_IE11_自选_64位_无驱动_原版无接管'
         $osurl = $obj.osurl2
-        $osfile = $obj.osfile
-        $osindex = 4
-        $osver = '7'
-        $osversion = ($obj.osfile -split '_')[-2]
-        $osarch = 'x64'
-        $sysver = "XRSYS_Win7_SP2_Pro_x64_CN_Full"
-        $sysvercn = "潇然系统_Win7_SP2_专业_x64_完整"
+        $osFile = $obj.osfile
+        $osIndex = 4
+        $osVer = '7'
+        $osVersion = ($obj.osfile -split '_')[-2]
+        $osArch = 'x64'
+        $sysVer = "XRSYS_Win7_SP2_Pro_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win7_SP2_专业_x64_完整"
         Invoke-WebRequest https://c.xrgzs.top/unattend/764bit.xml -OutFile .\unattend.xml
     }
     Default {
@@ -186,58 +186,58 @@ switch ($Target) {
 }
 
 if ($FullDrv) {
-    if ($osarch -eq "x64" -and [float]$osversion -ge 16299.0) {
+    if ($osArch -eq "x64" -and [float]$osVersion -ge 16299.0) {
         # DCH x64
-        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_Win11_x64_Lite.iso"
+        $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_Win11_x64_Lite.iso"
     }
-    elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
+    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 10240.0) {
         # noDCH x64
-        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_noDCH_x64_Lite.iso"
+        $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_noDCH_x64_Lite.iso"
     }
-    elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
+    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 7600.0) {
         # Win7 x64
-        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x64_Lite.iso"
+        $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x64_Lite.iso"
     }
-    elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
+    elseif ($osArch -eq "x86" -and [float]$osVersion -ge 7600.0) {
         # Win7 x86
-        $osdrvurl = "$server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x86_Lite.iso"
+        $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x86_Lite.iso"
     }
     else {
         Write-Error "Cannot match related driver iso."
     }
-    $sysver = $sysver + "_DrvCeo"
-    $sysvercn = $sysvercn + "_驱动总裁"
+    $sysVer = $sysVer + "_DrvCeo"
+    $sysVerCN = $sysVerCN + "_驱动总裁"
 }
 
 # dealosdriver
 if ($null -eq $osdrvurl) {
-    if ($osarch -eq "x64" -and [float]$osversion -ge 19041.0) {
-        $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10x64.iso"
+    if ($osArch -eq "x64" -and [float]$osVersion -ge 19041.0) {
+        $osdrvurl = "$Server/d/pxy/System/Driver/DP/NET/NET10x64.iso"
     }
-    elseif ($osarch -eq "arm64" -and [float]$osversion -ge 19041.0) {
-        $osdrvurl = "$server/d/pxy/System/Driver/DP/NET/NET10a64.iso"
+    elseif ($osArch -eq "arm64" -and [float]$osVersion -ge 19041.0) {
+        $osdrvurl = "$Server/d/pxy/System/Driver/DP/NET/NET10a64.iso"
     }
-    elseif ($osarch -eq "x64" -and [float]$osversion -ge 10240.0) {
-        $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin10x64.iso"
+    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 10240.0) {
+        $osdrvurl = "$Server/d/pxy/System/Driver/DP/DPWin10x64.iso"
     }
-    elseif ($osarch -eq "x64" -and [float]$osversion -ge 7600.0) {
-        $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin7x64.iso"
+    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 7600.0) {
+        $osdrvurl = "$Server/d/pxy/System/Driver/DP/DPWin7x64.iso"
     }
-    elseif ($osarch -eq "x86" -and [float]$osversion -ge 7600.0) {
-        $osdrvurl = "$server/d/pxy/System/Driver/DP/DPWin7x86.iso"
+    elseif ($osArch -eq "x86" -and [float]$osVersion -ge 7600.0) {
+        $osdrvurl = "$Server/d/pxy/System/Driver/DP/DPWin7x86.iso"
     }
     else {
         Write-Error "Cannot match related driver iso."
     }
-    $sysver = $sysver + "_Net"
-    $sysvercn = $sysvercn + "_主板驱动"
+    $sysVer = $sysVer + "_Net"
+    $sysVerCN = $sysVerCN + "_主板驱动"
 }
 
 # set version
 Set-TimeZone -Id "China Standard Time" -PassThru
-$sysdatefull = Get-Date
-$sysdate = $sysdatefull | Get-Date -Format "yyyy.MM.dd"
-$sysfile = "${sysver}_${sysdate}_${osversion}"
+$sysDateFull = Get-Date
+$sysDate = $sysDateFull | Get-Date -Format "yyyy.MM.dd"
+$sysFile = "${sysver}_${sysdate}_${osversion}"
 
 # remove temporaty files
 Remove-Item -Path ".\temp\" -Recurse -ErrorAction SilentlyContinue 
@@ -269,29 +269,29 @@ if (-not (Test-Path -Path ".\bin\rclone.exe")) {
     Copy-Item -Path .\temp\rclone-*-windows-amd64\rclone.exe -Destination .\bin\rclone.exe
 }
 
-Remove-Item -Path $osfile -Force -ErrorAction SilentlyContinue 
-.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -o "$osfile" "$osurl"
+Remove-Item -Path $osFile -Force -ErrorAction SilentlyContinue 
+.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -o "$osFile" "$osurl"
 if ($?) { Write-Host "System Image Download Successfully!" } else { Write-Error "System Image Download Failed!" }
 
-$osfileext = [System.IO.Path]::GetExtension("$osfile")
-$osfilename = [System.IO.Path]::GetFileNameWithoutExtension("$osfile")
+$osFileext = [System.IO.Path]::GetExtension("$osFile")
+$osFilename = [System.IO.Path]::GetFileNameWithoutExtension("$osFile")
 
 # extract iso
-if ($osfileext -eq ".iso") {
-    ."C:\Program Files\7-Zip\7z.exe" e -y "$osfile" sources\install.wim
+if ($osFileext -eq ".iso") {
+    ."C:\Program Files\7-Zip\7z.exe" e -y "$osFile" sources\install.wim
     if (Test-Path -Path "install.wim") {
         Write-Host "extract iso Successfully!"
-        $osfile = "install.wim"
-        $osfilename = "install"
-        $osfileext = ".wim"
+        $osFile = "install.wim"
+        $osFilename = "install"
+        $osFileext = ".wim"
     }
     else {
-        ."C:\Program Files\7-Zip\7z.exe" e -y "$osfile" sources\install.esd
+        ."C:\Program Files\7-Zip\7z.exe" e -y "$osFile" sources\install.esd
         if (Test-Path -Path "install.esd") {
             Write-Host "extract esd Successfully!"
-            $osfile = "install.esd"
-            $osfilename = "install"
-            $osfileext = ".esd"
+            $osFile = "install.esd"
+            $osFilename = "install"
+            $osFileext = ".esd"
         }
         else {
             Write-Error "extract wim or esd failed!"
@@ -299,8 +299,8 @@ if ($osfileext -eq ".iso") {
     }
 }
 # convert esd to wim
-# if ($osfileext -eq ".esd") {
-#     .\bin\wimlib\wimlib-imagex.exe export "$osfile" all "$osfilename.wim" --compress fast
+# if ($osFileext -eq ".esd") {
+#     .\bin\wimlib\wimlib-imagex.exe export "$osFile" all "$osFilename.wim" --compress fast
 # }
 
 # make xrsys image
@@ -319,11 +319,11 @@ if ($?) { Write-Host "Create virtual disk Successfully!" } else { Write-Error "C
 $mountDir = "S:"
 
 # extract imagefile use wimlib-imagex
-Write-Host "Extracting $osfile, please wait..."
-.\bin\wimlib\wimlib-imagex.exe apply "$osfile" $osindex "$mountDir"
+Write-Host "Extracting $osFile, please wait..."
+.\bin\wimlib\wimlib-imagex.exe apply "$osFile" $osIndex "$mountDir"
 # inject deploy
 Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
-.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s4 -x4 -d $mountDir -o osc.exe "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
+.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s4 -x4 -d $mountDir -o osc.exe "$Server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
 if ($?) { Write-Host "XRSYS-OSC Download Successfully!" } else { Write-Error "XRSYS-OSC Download Failed!" }
 Copy-Item -Path ".\injectdeploy.bat" -Destination "$mountDir" -Force
 Copy-Item -Path ".\unattend.xml" -Destination "$mountDir" -Force
@@ -342,24 +342,24 @@ $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 Remove-Item -Path $isopath -ErrorAction SilentlyContinue 
 
 # add software pack
-# .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d .\temp -o pack.7z "$server/d/pxy/Xiaoran%20Studio/Onekey/Config/pack64.7z"
+# .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d .\temp -o pack.7z "$Server/d/pxy/Xiaoran%20Studio/Onekey/Config/pack64.7z"
 # ."C:\Program Files\7-Zip\7z.exe" x -r -y -p123 ".\temp\pack.7z" -o"$mountDir\Windows\Setup\Set\osc"
 # if ($?) {Write-Host "software pack Download Successfully!"} else {Write-Error "software pack Download Failed!"}
 # Remove-Item -Path ".\temp\pack.7z" -ErrorAction SilentlyContinue 
 # Remove-Item -Path "$mountDir\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction SilentlyContinue 
-if ([int]$osver -ge 10) {
+if ([int]$osVer -ge 10) {
     # add edge runtime Windows 10+ 
-    $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json)."msedge-stable-win-$osarch"
+    $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json)."msedge-stable-win-$osArch"
     .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -o "$($msedge.文件名)" "$($msedge.下载链接)"
     if ($?) { Write-Host "Edge Download Successfully!" } else { Write-Error "Edge Download Failed!" }
 }
-.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\Run" -o 安装常用工具.exe "$server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
+.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\Run" -o 安装常用工具.exe "$Server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
 if ($?) { Write-Host "XRSYS-Tools Download Successfully!" } else { Write-Error "XRSYS-Tools Download Failed!" }
 # add tag
 # "isxrsys" > "$mountDir\Windows\Setup\zjsoftonlinexrsys.txt"
 
 # remove preinstalled appx
-if ([int]$osver -ge 10) {
+if ([int]$osVer -ge 10) {
     $preinstalled = Get-AppxProvisionedPackage -Path "$mountDir"
     foreach ($appName in @(
             'clipchamp.clipchamp',
@@ -415,9 +415,9 @@ ${sysver}_${sysdate}
 " | Out-File -FilePath "$mountDir\Windows\Version.txt" -Encoding gbk
 
 # capture system image
-# Write-Host "Packing $sysfile.wim, please wait..."
-# New-WindowsImage -ImagePath ".\$sysfile.wim" -CapturePath "$mountDir" -Name $sysver -Description $sysvercn
-.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysfile.esd" "$sysver" "$sysvercn" --solid
+# Write-Host "Packing $sysFile.wim, please wait..."
+# New-WindowsImage -ImagePath ".\$sysFile.wim" -CapturePath "$mountDir" -Name $sysVer -Description $sysVerCN
+.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysFile.esd" "$sysVer" "$sysVerCN" --solid
 if ($?) { Write-Host "Capture Successfully!" } else { Write-Error "Capture Failed!" }
 
 # clean up mount dir
@@ -430,38 +430,38 @@ if ($?) { Write-Host "Clean Up Successfully!" } else { Write-Error "Clean Up Fai
 Remove-Item $vhdfile -Force -ErrorAction SilentlyContinue
 
 # convert to esd
-# .\bin\wimlib\wimlib-imagex.exe export "$sysfile.wim" all "$sysfile.esd" --solid
+# .\bin\wimlib\wimlib-imagex.exe export "$sysFile.wim" all "$sysFile.esd" --solid
 # if ($?) { Write-Host "Convert Successfully!"} else {Write-Error "Convert Failed!"}
 
 # Get file information
-$sysfilebyte = (Get-ItemProperty ".\$sysfile.esd").Length
-$sysfilesize = [Math]::Round($sysfilebyte / 1024 / 1024 / 1024, 2)
-$sysfilemd5 = Get-FileHash ".\$sysfile.esd" -Algorithm MD5 | Select-Object -ExpandProperty Hash
-$sysfilesha256 = Get-FileHash ".\$sysfile.esd" -Algorithm SHA256 | Select-Object -ExpandProperty Hash
+$sysFileByte = (Get-ItemProperty ".\$sysFile.esd").Length
+$sysFileSize = [Math]::Round($sysFileByte / 1024 / 1024 / 1024, 2)
+$sysFileMD5 = Get-FileHash ".\$sysFile.esd" -Algorithm MD5 | Select-Object -ExpandProperty Hash
+$sysFileSHA256 = Get-FileHash ".\$sysFile.esd" -Algorithm SHA256 | Select-Object -ExpandProperty Hash
 @{
     "sys" = @{
-        "ver"      = [string]$sysver
-        "vercn"    = $sysvercn
-        "date"     = $sysdate
-        "datefull" = $sysdatefull
-        "file"     = "$sysfile.esd"
-        "size"     = "$sysfilesize GB"
-        "byte"     = $sysfilebyte
-        "md5"      = $sysfilemd5
-        "sha256"   = $sysfilesha256
-        "url"      = "$server/d/pxy/Xiaoran%20Studio/System/Nightly/$sysdate/$sysfile.esd"
+        "ver"      = [string]$sysVer
+        "vercn"    = $sysVerCN
+        "date"     = $sysDate
+        "datefull" = $sysDateFull
+        "file"     = "$sysFile.esd"
+        "size"     = "$sysFileSize GB"
+        "byte"     = $sysFileByte
+        "md5"      = $sysFileMD5
+        "sha256"   = $sysFileSHA256
+        "url"      = "$Server/d/pxy/Xiaoran%20Studio/System/Nightly/$sysDate/$sysFile.esd"
     }
     "os"  = @{
-        "arch"    = $osarch
-        "ver"     = $osver
-        "version" = $osversion
-        "file"    = $osfile
-        "index"   = $osindex
+        "arch"    = $osArch
+        "ver"     = $osVer
+        "version" = $osVersion
+        "file"    = $osFile
+        "index"   = $osIndex
     }
-} | ConvertTo-Json | Out-File -FilePath ".\$sysfile.json" -Encoding utf8
+} | ConvertTo-Json | Out-File -FilePath ".\$sysFile.json" -Encoding utf8
 
 # Publish image
-.\bin\rclone.exe copy "$sysfile.esd" "oofutech:/Xiaoran Studio/System/Nightly/$sysdate" --progress
+.\bin\rclone.exe copy "$sysFile.esd" "oofutech:/Xiaoran Studio/System/Nightly/$sysDate" --progress
 if ($?) { Write-Host "Upload Successfully!" } else { Write-Error "Upload Failed!" }
-.\bin\rclone.exe copy "$sysfile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysdate" --progress
-.\bin\rclone.exe copyto "$sysfile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysver.json" --progress
+.\bin\rclone.exe copy "$sysFile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysDate" --progress
+.\bin\rclone.exe copyto "$sysFile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysVer.json" --progress
