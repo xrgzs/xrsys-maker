@@ -20,6 +20,103 @@ param(
 $ErrorActionPreference = 'Stop'
 $Server = "https://alist.xrgzs.top"
 
+function Get-Aria2Error($exitcode) {
+    $codes = @{
+        0  = 'All downloads were successful'
+        1  = 'An unknown error occurred'
+        2  = 'Timeout'
+        3  = 'Resource was not found'
+        4  = 'Aria2 saw the specified number of "resource not found" error. See --max-file-not-found option'
+        5  = 'Download aborted because download speed was too slow. See --lowest-speed-limit option'
+        6  = 'Network problem occurred.'
+        7  = 'There were unfinished downloads. This error is only reported if all finished downloads were successful and there were unfinished downloads in a queue when aria2 exited by pressing Ctrl-C by an user or sending TERM or INT signal'
+        8  = 'Remote server did not support resume when resume was required to complete download'
+        9  = 'There was not enough disk space available'
+        10 = 'Piece length was different from one in .aria2 control file. See --allow-piece-length-change option'
+        11 = 'Aria2 was downloading same file at that moment'
+        12 = 'Aria2 was downloading same info hash torrent at that moment'
+        13 = 'File already existed. See --allow-overwrite option'
+        14 = 'Renaming file failed. See --auto-file-renaming option'
+        15 = 'Aria2 could not open existing file'
+        16 = 'Aria2 could not create new file or truncate existing file'
+        17 = 'File I/O error occurred'
+        18 = 'Aria2 could not create directory'
+        19 = 'Name resolution failed'
+        20 = 'Aria2 could not parse Metalink document'
+        21 = 'FTP command failed'
+        22 = 'HTTP response header was bad or unexpected'
+        23 = 'Too many redirects occurred'
+        24 = 'HTTP authorization failed'
+        25 = 'Aria2 could not parse bencoded file (usually ".torrent" file)'
+        26 = '".torrent" file was corrupted or missing information that aria2 needed'
+        27 = 'Magnet URI was bad'
+        28 = 'Bad/unrecognized option was given or unexpected option argument was given'
+        29 = 'The remote server was unable to handle the request due to a temporary overloading or maintenance'
+        30 = 'Aria2 could not parse JSON-RPC request'
+        31 = 'Reserved. Not used'
+        32 = 'Checksum validation failed'
+    }
+    if ($null -eq $codes[$exitcode]) {
+        return 'An unknown error occurred'
+    }
+    return $codes[$exitcode]
+}
+function Invoke-Aria2Download {
+    param (
+        [Parameter(Mandatory = $true, Position = 0)]
+        [uri]$Uri,
+
+        [Parameter(Position = 1)]
+        [string]$Destination,
+
+        [Parameter(Position = 2)]
+        [string]$Name,
+        
+        [switch]$Big,
+
+        [string[]]$Options = @()
+    )
+    # aria2 options
+    $Options += @(
+        '--no-conf=true'
+        '--continue'
+        '--allow-overwrite=true'
+        '--summary-interval=0'
+        '--remote-time=true'
+        '--retry-wait=5'
+        '--check-certificate=false'
+    )
+
+    # set task info
+    $Options += "'$Uri'"
+    if ($Destination) {
+        $Options += "--dir=`"$Destination`""
+    }
+    if ($Name) {
+        $Options += "--out=`"$Name`""
+    }
+    if ($Big) {
+        $Options += @(
+            '-s16'
+            '-x16'
+        )
+    }
+
+    # build aria2 command
+    $aria2 = "& .\bin\aria2c.exe $($Options -join ' ')"
+
+    # handle aria2 console output
+    Write-Host 'Starting download with aria2 ...' -ForegroundColor Green
+    Write-Host "  Command: $aria2" -ForegroundColor Cyan
+    Invoke-Command ([scriptblock]::Create($aria2))
+
+    # handle aria2 error
+    Write-Host ''
+    if ($LASTEXITCODE -gt 0) {
+        Write-Error "Download failed! (Error $LASTEXITCODE) $(Get-Aria2Error $lastexitcode)"
+    }
+}
+
 function Get-OsBySearch {
     param (
         $Path,
@@ -274,8 +371,7 @@ if (-not (Test-Path -Path ".\bin\rclone.exe")) {
 }
 
 Remove-Item -Path $osFile -Force -ErrorAction SilentlyContinue 
-.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -o "$osFile" "$osurl"
-if ($?) { Write-Host "System Image Download Successfully!" } else { Write-Error "System Image Download Failed!" }
+Invoke-Aria2Download -Uri $osurl -Name $osFile -Big
 
 $osFileext = [System.IO.Path]::GetExtension("$osFile")
 $osFilename = [System.IO.Path]::GetFileNameWithoutExtension("$osFile")
@@ -327,8 +423,7 @@ Write-Host "Extracting $osFile, please wait..."
 .\bin\wimlib\wimlib-imagex.exe apply "$osFile" $osIndex "$mountDir"
 # inject deploy
 Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
-.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s4 -x4 -d $mountDir -o osc.exe "$Server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe"
-if ($?) { Write-Host "XRSYS-OSC Download Successfully!" } else { Write-Error "XRSYS-OSC Download Failed!" }
+Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe" -Destination $mountDir -Name "osc.exe"
 Copy-Item -Path ".\injectdeploy.bat" -Destination "$mountDir" -Force
 Copy-Item -Path ".\unattend.xml" -Destination "$mountDir" -Force
 & "$mountDir\injectdeploy.bat" /S
@@ -336,7 +431,7 @@ if ($?) { Write-Host "Inject Deploy Successfully!" } else { Write-Error "Inject 
 Remove-Item -Path "$mountDir\injectdeploy.bat" -ErrorAction SilentlyContinue 
 
 # add drivers
-.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d .\temp -o drivers.iso "$osdrvurl"
+Invoke-Aria2Download -Uri $osdrvurl -Destination ".\temp" -Name "drivers.iso" -Big
 if ($?) { Write-Host "Driver Download Successfully!" } else { Write-Error "Driver Download Failed!" }
 $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 # $isomount = (Mount-DiskImage -ImagePath $isopath -PassThru | Get-Volume).DriveLetter
@@ -346,21 +441,12 @@ $isopath = Resolve-Path -Path ".\temp\drivers.iso"
 Remove-Item -Path $isopath -ErrorAction SilentlyContinue 
 
 # add software pack
-# .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d .\temp -o pack.7z "$Server/d/pxy/Xiaoran%20Studio/Onekey/Config/pack64.7z"
-# ."C:\Program Files\7-Zip\7z.exe" x -r -y -p123 ".\temp\pack.7z" -o"$mountDir\Windows\Setup\Set\osc"
-# if ($?) {Write-Host "software pack Download Successfully!"} else {Write-Error "software pack Download Failed!"}
-# Remove-Item -Path ".\temp\pack.7z" -ErrorAction SilentlyContinue 
-# Remove-Item -Path "$mountDir\Windows\Setup\Set\osc\搜狗拼音输入法.exe" -ErrorAction SilentlyContinue 
 if ([int]$osVer -ge 10) {
     # add edge runtime Windows 10+ 
     $msedge = (Invoke-RestMethod https://github.com/Bush2021/edge_installer/raw/main/data.json)."msedge-stable-win-$osArch"
-    .\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -o "$($msedge.文件名)" "$($msedge.下载链接)"
-    if ($?) { Write-Host "Edge Download Successfully!" } else { Write-Error "Edge Download Failed!" }
+    Invoke-Aria2Download -Uri $msedge.下载链接 -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name $msedge.文件名 -Big
 }
-.\bin\aria2c.exe -c -R --retry-wait=5 --check-certificate=false -s16 -x16 -d "$mountDir\Windows\Setup\Set\Run" -o 安装常用工具.exe "$Server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe"
-if ($?) { Write-Host "XRSYS-Tools Download Successfully!" } else { Write-Error "XRSYS-Tools Download Failed!" }
-# add tag
-# "isxrsys" > "$mountDir\Windows\Setup\zjsoftonlinexrsys.txt"
+Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "常用工具.exe" -Big
 
 # remove preinstalled appx
 if ([int]$osVer -ge 10) {
