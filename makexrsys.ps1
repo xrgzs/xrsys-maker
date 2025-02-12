@@ -447,7 +447,7 @@ if ([int]$osVer -ge 10) {
     Invoke-Aria2Download -Uri $msedge.下载链接 -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name $msedge.文件名 -Big
     # add pwsh runtime Windows 10+
     $pwshver = (Invoke-RestMethod https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/metadata.json).ReleaseTag -replace '^v'
-    Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v${pwshver}/PowerShell-${pwshver}-win-${osArch}.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-${release}-win.msi" -Big
+    Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v${pwshver}/PowerShell-${pwshver}-win-${osArch}.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-${pwshver}-win.msi" -Big
 }
 else {
     # add edge runtime Windows 8.1-
@@ -462,7 +462,7 @@ Invoke-Aria2Download -Uri "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-
 # add another softwares
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "常用工具.exe" -Big
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Office2016%E5%AD%97%E4%BD%93.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "办公字体.exe" -Big
-Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Bandizip.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "Bandizip.exe" -Big
+Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Soft/Bandizip.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "Bandizip.exe" -Big
 
 # remove preinstalled appx
 if ([int]$osVer -ge 10) {
