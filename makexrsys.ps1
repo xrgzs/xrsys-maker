@@ -117,42 +117,11 @@ function Invoke-Aria2Download {
     }
 }
 
-function Get-OsBySearch {
-    param (
-        $Path,
-        $Search
-    )
-    # parse server file list
-    $obj1 = (Invoke-WebRequest -Uri "$Server/api/fs/list" `
-            -Method "POST" `
-            -ContentType "application/json;charset=UTF-8" `
-            -Body (@{
-                path     = $Path
-                page     = 1
-                password = ""
-                per_page = 0
-                refresh  = $false
-            } | Convertto-Json)).Content | ConvertFrom-Json
-    
-    # get original system direct link
-    $obj2 = (Invoke-WebRequest -UseBasicParsing -Uri "$Server/api/fs/get" `
-            -Method "POST" `
-            -ContentType "application/json;charset=UTF-8" `
-            -Body (@{
-                path     = $Path + '/' + ($obj1.data.content | Where-Object -Property Name -Like $Search).name
-                password = ""
-            } | Convertto-Json)).Content | ConvertFrom-Json
-    $out = @{}
-    $out.osurl = $obj2.data.raw_url
-    $out.osfile = $obj2.data.name
-    return $out
-}
-
 # set original system info
 switch ($Target) {
     "w1124h2a64" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/24H2/latest_arm64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/24H2/latest_arm64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -163,8 +132,8 @@ switch ($Target) {
         Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w1124h264" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/24H2/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/24H2/latest_x64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -174,8 +143,8 @@ switch ($Target) {
         $sysVerCN = "潇然系统_Win11_24H2_专业_x64_完整"
     }
     "w1123h2a64" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/23H2/latest_arm64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/23H2/latest_arm64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -189,8 +158,8 @@ switch ($Target) {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
         # $osurl = $obj.osurl
         # $osFile = $obj.osfile
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/23H2/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/23H2/latest_x64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -203,8 +172,8 @@ switch ($Target) {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
         # $osurl = $obj.osurl
         # $osFile = $obj.osfile
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/22H2/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/22H2/latest_x64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -214,8 +183,8 @@ switch ($Target) {
         $sysVerCN = "潇然系统_Win10_22H2_专业_x64_完整"
     }
     "w11lt2464" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/LTSC2024/latest_x64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -225,8 +194,8 @@ switch ($Target) {
         $sysVerCN = "潇然系统_Win11_LTSC2024_企业S_x64_完整"
     }
     "w11lt24a64" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/latest_arm64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/LTSC2024/latest_arm64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -237,8 +206,8 @@ switch ($Target) {
         Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w10lt2164" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/LTSC2021/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/LTSC2021/latest_x64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -248,8 +217,8 @@ switch ($Target) {
         $sysVerCN = "潇然系统_Win10_LTSC2021_企业S_x64_完整"
     }
     "w10lt1964" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/LTSC2019/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/LTSC2019/latest_x64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -259,8 +228,8 @@ switch ($Target) {
         $sysVerCN = "潇然系统_Win10_LTSC2019_企业S_x64_完整"
     }
     "w10lt1664" {
-        $obj = (Invoke-WebRequest -Uri "$Server/d/mount/oofutech/MSUpdate/10/LTSB2016/latest_x64.json").Content | ConvertFrom-Json
-        $osurl = "$Server/d/mount/oofutech/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/LTSB2016/latest_x64.json"
+        $osurl = "$Server/d/pxy/System/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -447,7 +416,7 @@ if ([int]$osVer -ge 10) {
     Invoke-Aria2Download -Uri $msedge.下载链接 -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name $msedge.文件名 -Big
     # add pwsh runtime Windows 10+
     $pwshver = (Invoke-RestMethod https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/metadata.json).ReleaseTag -replace '^v'
-    Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v${pwshver}/PowerShell-${pwshver}-win-${osArch}.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-${release}-win.msi" -Big
+    Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v${pwshver}/PowerShell-${pwshver}-win-${osArch}.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-${pwshver}-win.msi" -Big
 }
 else {
     # add edge runtime Windows 8.1-
@@ -462,7 +431,7 @@ Invoke-Aria2Download -Uri "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-
 # add another softwares
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "常用工具.exe" -Big
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Office2016%E5%AD%97%E4%BD%93.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "办公字体.exe" -Big
-Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Bandizip.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "Bandizip.exe" -Big
+Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Soft/Bandizip.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "Bandizip.exe" -Big
 
 # remove preinstalled appx
 if ([int]$osVer -ge 10) {
@@ -523,7 +492,7 @@ ${sysver}_${sysdate}
 # capture system image
 # Write-Host "Packing $sysFile.wim, please wait..."
 # New-WindowsImage -ImagePath ".\$sysFile.wim" -CapturePath "$mountDir" -Name $sysVer -Description $sysVerCN
-.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysFile.esd" "$sysVer" "$sysVerCN" --solid
+.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysFile.esd" "$sysVer" "$sysVerCN" --solid  --image-property "DISPLAYNAME=$sysVer" --image-property "DISPLAYDESCRIPTION=$sysVerCN"
 if ($?) { Write-Host "Capture Successfully!" } else { Write-Error "Capture Failed!" }
 
 # clean up mount dir
@@ -567,10 +536,10 @@ $sysFileSHA256 = Get-FileHash ".\$sysFile.esd" -Algorithm SHA256 | Select-Object
 } | ConvertTo-Json | Out-File -FilePath ".\$sysFile.json" -Encoding utf8
 
 # Publish image
-.\bin\rclone.exe copy "$sysFile.esd" "oofutech:/Xiaoran Studio/System/Nightly/$sysDate" --progress
+.\bin\rclone.exe copy "$sysFile.esd" "webdav:/Xiaoran Studio/System/Nightly/$sysDate" --progress
 if ($?) { Write-Host "Upload Successfully!" } else { Write-Error "Upload Failed!" }
-.\bin\rclone.exe copy "$sysFile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysDate" --progress
+.\bin\rclone.exe copy "$sysFile.json" "webdav:/Xiaoran Studio/System/Nightly/$sysDate" --progress
 # Set latest
 if ($Latest) {
-    .\bin\rclone.exe copyto "$sysFile.json" "oofutech:/Xiaoran Studio/System/Nightly/$sysVer.json" --progress
+    .\bin\rclone.exe copyto "$sysFile.json" "webdav:/Xiaoran Studio/System/Nightly/$sysVer.json" --progress
 }
