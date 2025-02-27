@@ -51,8 +51,7 @@ function Invoke-Aria2Download {
                 $res.Close()
                 if ($loc) { $Uri = $loc } else { return $Uri }
             }
-        }
-        catch { return $Uri }
+        } catch { return $Uri }
     }
     
     function Get-Aria2Error($exitcode) {
@@ -281,20 +280,16 @@ if ($FullDrv) {
     if ($osArch -eq "x64" -and [float]$osVersion -ge 16299.0) {
         # DCH x64
         $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_Win11_x64_Lite.iso"
-    }
-    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 10240.0) {
+    } elseif ($osArch -eq "x64" -and [float]$osVersion -ge 10240.0) {
         # noDCH x64
         $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win10_noDCH_x64_Lite.iso"
-    }
-    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 7600.0) {
+    } elseif ($osArch -eq "x64" -and [float]$osVersion -ge 7600.0) {
         # Win7 x64
         $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x64_Lite.iso"
-    }
-    elseif ($osArch -eq "x86" -and [float]$osVersion -ge 7600.0) {
+    } elseif ($osArch -eq "x86" -and [float]$osVersion -ge 7600.0) {
         # Win7 x86
         $osdrvurl = "$Server/d/pxy/System/Driver/DrvCeo_Mod/Drvceo_Win7x86_Lite.iso"
-    }
-    else {
+    } else {
         Write-Error "Cannot match related driver iso."
     }
     $sysVer = $sysVer + "_DrvCeo"
@@ -305,20 +300,15 @@ if ($FullDrv) {
 if ($null -eq $osdrvurl) {
     if ($osArch -eq "x64" -and [float]$osVersion -ge 19041.0) {
         $osdrvurl = "$Server/d/pxy/System/Driver/DP/NET/NET10x64.iso"
-    }
-    elseif ($osArch -eq "arm64" -and [float]$osVersion -ge 19041.0) {
+    } elseif ($osArch -eq "arm64" -and [float]$osVersion -ge 19041.0) {
         $osdrvurl = "$Server/d/pxy/System/Driver/DP/NET/NET10a64.iso"
-    }
-    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 10240.0) {
+    } elseif ($osArch -eq "x64" -and [float]$osVersion -ge 10240.0) {
         $osdrvurl = "$Server/d/pxy/System/Driver/DP/DPWin10x64.iso"
-    }
-    elseif ($osArch -eq "x64" -and [float]$osVersion -ge 7600.0) {
+    } elseif ($osArch -eq "x64" -and [float]$osVersion -ge 7600.0) {
         $osdrvurl = "$Server/d/pxy/System/Driver/DP/DPWin7x64.iso"
-    }
-    elseif ($osArch -eq "x86" -and [float]$osVersion -ge 7600.0) {
+    } elseif ($osArch -eq "x86" -and [float]$osVersion -ge 7600.0) {
         $osdrvurl = "$Server/d/pxy/System/Driver/DP/DPWin7x86.iso"
-    }
-    else {
+    } else {
         Write-Error "Cannot match related driver iso."
     }
     $sysVer = $sysVer + "_Net"
@@ -375,16 +365,14 @@ if ($osFileext -eq ".iso") {
         $osFile = "install.wim"
         $osFilename = "install"
         $osFileext = ".wim"
-    }
-    else {
+    } else {
         ."C:\Program Files\7-Zip\7z.exe" e -y "$osFile" sources\install.esd
         if (Test-Path -Path "install.esd") {
             Write-Host "extract esd Successfully!"
             $osFile = "install.esd"
             $osFilename = "install"
             $osFileext = ".esd"
-        }
-        else {
+        } else {
             Write-Error "extract wim or esd failed!"
         }
     }
@@ -439,8 +427,7 @@ if ([int]$osVer -ge 10) {
     # add pwsh runtime Windows 10+
     $pwshver = (Invoke-RestMethod https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/metadata.json).ReleaseTag -replace '^v'
     Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v${pwshver}/PowerShell-${pwshver}-win-${osArch}.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-${pwshver}-win.msi" -Big
-}
-else {
+} else {
     # add edge runtime Windows 8.1-
     Invoke-Aria2Download -Uri "$Server/d/pxy/Software/Edge/109/MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name "MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Big
     # add pwsh runtime Windows 8.1-
