@@ -545,10 +545,10 @@ $sysFileSHA256 = Get-FileHash ".\$sysFile.esd" -Algorithm SHA256 | Select-Object
 } | ConvertTo-Json | Out-File -FilePath ".\$sysFile.json" -Encoding utf8
 
 # Publish image
-.\bin\rclone.exe copy "$sysFile.esd" "webdav:/Xiaoran Studio/System/Nightly/$sysDate" --progress
+.\bin\rclone.exe copy "$sysFile.esd" "odp:/Share/Xiaoran Studio/System/Nightly/$sysDate" --progress
 if ($?) { Write-Host "Upload Successfully!" } else { Write-Error "Upload Failed!" }
-.\bin\rclone.exe copy "$sysFile.json" "webdav:/Xiaoran Studio/System/Nightly/$sysDate" --progress
+.\bin\rclone.exe copy "$sysFile.json" "odp:/Share/Xiaoran Studio/System/Nightly/$sysDate" --progress
 # Set latest
 if ($Latest) {
-    .\bin\rclone.exe copyto "$sysFile.json" "webdav:/Xiaoran Studio/System/Nightly/$sysVer.json" --progress
+    .\bin\rclone.exe copyto "$sysFile.json" "odp:/Share/Xiaoran Studio/System/Nightly/$sysVer.json" --progress
 }
