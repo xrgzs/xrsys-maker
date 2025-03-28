@@ -259,16 +259,16 @@ switch ($Target) {
         $sysVer = "XRSYS_Win10_LTSB2016_EntS_x64_CN_Full"
         $sysVerCN = "潇然系统_Win10_LTSB2016_企业S_x64_完整"
     }
-    "w7pro64" {
+    "w7ult64" {
         $obj = (Invoke-RestMethod https://c.xrgzs.top/OSList.json).'【更新】7_SP1_IE11_自选_64位_无驱动_原版无接管'
         $osurl = $obj.osurl2
         $osFile = $obj.osfile
-        $osIndex = 4
+        $osIndex = 5
         $osVer = '7'
         $osVersion = ($obj.osfile -split '_')[-2]
         $osArch = 'x64'
-        $sysVer = "XRSYS_Win7_SP2_Pro_x64_CN_Full"
-        $sysVerCN = "潇然系统_Win7_SP2_专业_x64_完整"
+        $sysVer = "XRSYS_Win7_SP1_Ult_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win7_SP1_旗舰_x64_完整"
         Invoke-WebRequest https://c.xrgzs.top/unattend/764bit.xml -OutFile .\unattend.xml
     }
     Default {
