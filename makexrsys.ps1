@@ -23,7 +23,7 @@ $Server = "https://alist.xrgzs.top"
 function Invoke-Aria2Download {
     param (
         [Parameter(Mandatory = $true, Position = 0)]
-        [uri]$Uri,
+        [string]$Uri,
 
         [Parameter(Position = 1)]
         [string]$Destination,
