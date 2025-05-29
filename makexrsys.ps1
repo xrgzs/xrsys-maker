@@ -142,7 +142,7 @@ function Invoke-Aria2Download {
 switch ($Target) {
     "w1124h2a64" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/24H2/latest_arm64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -154,7 +154,7 @@ switch ($Target) {
     }
     "w1124h264" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/24H2/latest_x64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -165,7 +165,7 @@ switch ($Target) {
     }
     "w1123h2a64" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/23H2/latest_arm64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -177,10 +177,10 @@ switch ($Target) {
     }
     "w1123h264" {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
-        # $osurl = $obj.osurl
+        # $osUrl = $obj.osurl
         # $osFile = $obj.osfile
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/23H2/latest_x64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -191,10 +191,10 @@ switch ($Target) {
     }
     "w1022h264" {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win10" -Search "MSUpdate_Win10_22H2*.esd"
-        # $osurl = $obj.osurl
+        # $osUrl = $obj.osurl
         # $osFile = $obj.osfile
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/22H2/latest_x64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/10/22H2/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
@@ -205,7 +205,7 @@ switch ($Target) {
     }
     "w11lt2464" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/LTSC2024/latest_x64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -216,7 +216,7 @@ switch ($Target) {
     }
     "w11lt24a64" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/LTSC2024/latest_arm64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/LTSC2024/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -228,7 +228,7 @@ switch ($Target) {
     }
     "w10lt2164" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/LTSC2021/latest_x64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/10/LTSC2021/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -239,7 +239,7 @@ switch ($Target) {
     }
     "w10lt1964" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/LTSC2019/latest_x64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/10/LTSC2019/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -250,7 +250,7 @@ switch ($Target) {
     }
     "w10lt1664" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/LTSB2016/latest_x64.json"
-        $osurl = "$Server/d/pxy/System/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
+        $osUrl = "$Server/d/pxy/System/MSUpdate/10/LTSB2016/" + $obj.os_version + '/' + $obj.name
         $osFile = $obj.name
         $osIndex = 1
         $osVer = $obj.os_ver
@@ -261,7 +261,7 @@ switch ($Target) {
     }
     "w7ult64" {
         $obj = (Invoke-RestMethod https://c.xrgzs.top/OSList.json).'【更新】7_SP1_IE11_自选_64位_无驱动_原版无接管'
-        $osurl = $obj.osurl2
+        $osUrl = $obj.osurl2
         $osFile = $obj.osfile
         $osIndex = 5
         $osVer = '7'
@@ -352,7 +352,7 @@ if (-not (Test-Path -Path ".\bin\rclone.exe")) {
 }
 
 Remove-Item -Path $osFile -Force -ErrorAction SilentlyContinue 
-Invoke-Aria2Download -Uri $osurl -Name $osFile -Big
+Invoke-Aria2Download -Uri $osUrl -Name $osFile -Big
 
 $osFileext = [System.IO.Path]::GetExtension("$osFile")
 $osFilename = [System.IO.Path]::GetFileNameWithoutExtension("$osFile")
