@@ -458,7 +458,8 @@ if ([int]$osVer -ge 10) {
     Invoke-Aria2Download -Uri "$Server/d/pxy/Software/PowerShell/PowerShell-7.2.24-win-x64.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-7.2.24-win-x64.msi" -Big
 }
 
-# add dotnet runtime
+# add runtimes
+Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Soft/MSVCRedist.AIO.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime" -Name "MSVCRedist.AIO.exe" -Big
 Invoke-Aria2Download -Uri "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-$osArch.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\DotNet" -Name "windowsdesktop-runtime-win-$osArch.exe" -Big
 
 # add another softwares
