@@ -140,30 +140,30 @@ function Invoke-Aria2Download {
 
 # set original system info
 switch ($Target) {
-    "w1124h2a64" {
-        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/24H2/latest_arm64.json"
-        $osUrl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+    "w1125h2a64" {
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/25H2/latest_arm64.json"
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/25H2/" + $obj.os_version + '/' + $obj.name
         $osMd5 = $obj.hash.md5
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
         $osVersion = $obj.os_version
         $osArch = $obj.os_arch
-        $sysVer = "XRSYS_Win11_24H2_Pro_ARM64_CN_Full"
-        $sysVerCN = "潇然系统_Win11_24H2_专业_ARM64_完整"
+        $sysVer = "XRSYS_Win11_25H2_Pro_ARM64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_25H2_专业_ARM64_完整"
         Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
-    "w1124h264" {
-        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/24H2/latest_x64.json"
-        $osUrl = "$Server/d/pxy/System/MSUpdate/11/24H2/" + $obj.os_version + '/' + $obj.name
+    "w1125h264" {
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/25H2/latest_x64.json"
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/25H2/" + $obj.os_version + '/' + $obj.name
         $osMd5 = $obj.hash.md5
         $osFile = $obj.name
         $osIndex = 4
         $osVer = $obj.os_ver
         $osVersion = $obj.os_version
         $osArch = $obj.os_arch
-        $sysVer = "XRSYS_Win11_24H2_Pro_x64_CN_Full"
-        $sysVerCN = "潇然系统_Win11_24H2_专业_x64_完整"
+        $sysVer = "XRSYS_Win11_25H2_Pro_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_25H2_专业_x64_完整"
     }
     "w1123h2a64" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/23H2/latest_arm64.json"

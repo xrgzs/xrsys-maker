@@ -8,8 +8,8 @@ on:
         required: true
         type: choice
         options:
-          - w1124h2a64
-          - w1124h264
+          - w1125h2a64
+          - w1125h264
           - w1123h2a64
           - w1123h264
           - w1022h264
