@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'Target OS Version'
+        description: "Target OS Version"
         required: true
         type: choice
         options:
@@ -20,12 +20,12 @@ on:
           - w10lt1664
           - w7ult64
       fulldrv:
-        description: 'Add Full Drivers'
+        description: "Add Full Drivers"
         required: false
         default: false
         type: boolean
       latest:
-        description: 'As Latest'
+        description: "As Latest"
         required: false
         default: false
         type: boolean
@@ -50,8 +50,12 @@ jobs:
           $newDnsServers = @('1.1.1.1', '8.8.8.8')
           $networkAdapters = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' }
           foreach ($adapter in $networkAdapters) {
-              Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ResetServerAddresses
-              Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses $newDnsServers
+               try {
+                  Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ResetServerAddresses
+                  Set-DnsClientServerAddress -InterfaceIndex $adapter.ifIndex -ServerAddresses $newDnsServers
+              } catch {
+                  Write-Host "Failed to set DNS for adapter $($adapter.Name): $_"
+              }
           }
           ipconfig /flushdns
 
