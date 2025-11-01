@@ -2,7 +2,7 @@
 @echo off
 setlocal enabledelayedexpansion
 color a
-title 潇然系统部署手动离线接管程序 - V2024.8.24.0
+title 潇然系统部署手动离线接管程序 - V2025.11.2.0
 cd /d "%~dp0"
 set silent=0
 
@@ -26,6 +26,10 @@ for %%a in (
 @REM 处理文件
 if exist "unattend.xml" move /y "unattend.xml" "Windows\Panther\unattend.xml"
 if exist "osc.exe" move /y "osc.exe" "Windows\Setup\Set\osc.exe"
+if exist "MSVCRedist.AIO.exe" (
+    mkdir "Windows\Setup\Set\osc\runtime" 2>nul
+    move /y "MSVCRedist.AIO.exe" "Windows\Setup\Set\osc\runtime\MSVCRedist.AIO.exe"
+)
 
 @REM 判断文件完整性
 if not exist "Windows\System32\config\SYSTEM" call :error "找不到系统注册表文件"

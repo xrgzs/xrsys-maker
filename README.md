@@ -10,6 +10,8 @@
 
    - `osc.exe`：潇然系统优化组件
 
+   - `MSVCRedist.AIO.exe`：潇然系统常用运行库
+
    - `unattend.xml`：潇然系统无人值守文件
 
    - `injectdeploy.bat`：潇然系统部署接管脚本
