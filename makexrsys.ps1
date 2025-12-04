@@ -182,14 +182,14 @@ switch ($Target) {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
         # $osUrl = $obj.osurl
         # $osFile = $obj.osfile
-        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/23H2/latest_x64.json"
-        $osUrl = "$Server/d/pxy/System/MSUpdate/11/23H2/" + $obj.os_version + '/' + $obj.name
-        $osMd5 = $obj.hash.md5
-        $osFile = $obj.name
-        $osIndex = 4
-        $osVer = $obj.os_ver
-        $osVersion = $obj.os_version
-        $osArch = $obj.os_arch
+        $obj = (Invoke-RestMethod https://c.xrgzs.top/OSList.json).'【更新】23H2_22631_自选_64位_无驱动_原版无接管_iso'
+        $osMd5 = $obj.md5
+        $osUrl = $obj.osurl2
+        $osFile = $obj.osfile
+        $osIndex = 3
+        $osVer = '11'
+        $osVersion = ($obj.osfile -split '\.')[0, 1] -join '.'
+        $osArch = 'x64'
         $sysVer = "XRSYS_Win11_23H2_Pro_x64_CN_Full"
         $sysVerCN = "潇然系统_Win11_23H2_专业_x64_完整"
     }
@@ -516,6 +516,12 @@ if ([int]$osVer -ge 10) {
     # disable default wd
     Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object { $_.FeatureName -like "*Defender*" } | Disable-WindowsOptionalFeature
     Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object { $_.FeatureName -like "*Recall*" } | Disable-WindowsOptionalFeature
+    
+    # remove webview2 fod (hidden), do this in cleanupcomponents stage
+    # Remove-WindowsCapability -Path "$mountDir" -Name "Edge.WebView2.Platform~~~~" -ErrorAction SilentlyContinue
+
+    # remove defender sense client
+    Get-WindowsCapability -Path "$mountDir" | Where-Object { $_.Name -like "*Sense.Client*" } | Remove-WindowsCapability -Path "$mountDir"
 }
 
 # write version
