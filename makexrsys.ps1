@@ -521,7 +521,11 @@ if ([int]$osVer -ge 10) {
     # Remove-WindowsCapability -Path "$mountDir" -Name "Edge.WebView2.Platform~~~~" -ErrorAction SilentlyContinue
 
     # remove defender sense client
-    Get-WindowsCapability -Path "$mountDir" | Where-Object { $_.Name -like "*Sense.Client*" } | Remove-WindowsCapability -Path "$mountDir"
+    try {
+        Get-WindowsCapability -Path "$mountDir" | Where-Object { $_.Name -like "*Sense.Client*" } | Remove-WindowsCapability -Path "$mountDir"
+    } catch {
+        Write-Host "No Defender Sense Client found, skipping..."
+    }
 }
 
 # write version
