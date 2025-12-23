@@ -1,3 +1,4 @@
+#Requires -Version 7
 <#
 .SYNOPSIS
 Xiaoran System Image Builder
