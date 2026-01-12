@@ -461,7 +461,10 @@ if ([int]$osVer -ge 10) {
 
 # add runtimes
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Soft/MSVCRedist.AIO.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime" -Name "MSVCRedist.AIO.exe" -Big
-Invoke-Aria2Download -Uri "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-$osArch.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\DotNet" -Name "windowsdesktop-runtime-win-$osArch.exe" -Big
+Invoke-Aria2Download -Uri "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-$osArch.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\DotNet" -Name "8.0-windowsdesktop-runtime-win-$osArch.exe" -Big
+if ([int]$osVer -ge 10) {
+    Invoke-Aria2Download -Uri "https://aka.ms/dotnet/10.0/windowsdesktop-runtime-win-$osArch.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\DotNet" -Name "10.0-windowsdesktop-runtime-win-$osArch.exe" -Big
+}
 
 # add another softwares
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "常用工具.exe" -Big
