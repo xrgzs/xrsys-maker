@@ -339,6 +339,29 @@ New-Item -Path ".\bin\" -ItemType "directory" -ErrorAction SilentlyContinue
 New-Item -Path ".\temp\" -ItemType "directory" -ErrorAction SilentlyContinue 
 
 # Installing dependencies
+function Test-Hashes {
+    param (
+        [hashtable]$Hashes,
+        [string]$Algorithm
+    )
+    return $Hashes.GetEnumerator() | ForEach-Object {
+        $file = $_.Key
+        $expectedHash = $_.Value
+        Write-Host -ForegroundColor Blue "Verifying $file $Algorithm hash ..."
+        Write-Host -ForegroundColor Gray "Expected: $expectedHash"
+        $actualHash = (Get-FileHash -Path $file -Algorithm $Algorithm).Hash
+        Write-Host -ForegroundColor Gray "Actual  : $actualHash"
+        if ($actualHash -ne $expectedHash) {
+            # return $false
+            Write-Error "$file hash not match."
+        } else {
+            Write-Host -ForegroundColor Green "$file hash match."
+        }
+    }
+}
+function Test-SHA256 ([hashtable]$Hashes) { return Test-Hashes -Hashes $Hashes -Algorithm "SHA256" }
+function Test-MD5 ([hashtable]$Hashes) { return Test-Hashes -Hashes $Hashes -Algorithm "MD5" }
+
 if (-not (Test-Path -Path ".\bin\rclone.conf")) {
     Write-Error "rclone conf not found"
 }
@@ -347,14 +370,23 @@ if (-not (Test-Path -Path "C:\Program Files\7-Zip\7z.exe")) {
 }
 if (-not (Test-Path -Path ".\bin\aria2c.exe")) {
     Write-Host "aria2c not found, downloading..."
-    Invoke-WebRequest -Uri 'https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0-win-64bit-build1.zip' -outfile .\temp\aria2.zip
-    Expand-Archive -Path .\temp\aria2.zip -DestinationPath .\temp -Force
-    Move-Item -Path .\temp\aria2-1.37.0-win-64bit-build1\aria2c.exe -Destination .\bin\aria2c.exe -Force
+    Invoke-WebRequest -Uri 'https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0-win-64bit-build1.zip' -OutFile ".\temp\aria2.zip"
+    Expand-Archive -Path ".\temp\aria2.zip" -DestinationPath ".\temp" -Force
+    Move-Item -Path ".\temp\aria2-1.37.0-win-64bit-build1\aria2c.exe" -Destination ".\bin\aria2c.exe" -Force
 }
-if (-not (Test-Path -Path ".\bin\wimlib\wimlib-imagex.exe")) {
+Test-SHA256 @{ 
+    ".\bin\aria2c.exe" = "BE2099C214F63A3CB4954B09A0BECD6E2E34660B886D4C898D260FEBFE9D70C2" 
+}
+if (-not (Test-Path -Path ".\bin\wimlib-imagex.exe")) {
     Write-Host "wimlib-imagex not found, downloading..."
-    Invoke-WebRequest -Uri 'https://wimlib.net/downloads/wimlib-1.14.4-windows-x86_64-bin.zip' -outfile .\temp\wimlib.zip
-    Expand-Archive -Path .\temp\wimlib.zip -DestinationPath .\bin\wimlib -Force
+    Invoke-WebRequest -Uri 'https://github.com/user-attachments/files/24684304/wimlib-1.14.4-windows-x86_64-bin.zip' -OutFile ".\temp\wimlib.zip"
+    Expand-Archive -Path ".\temp\wimlib.zip -DestinationPath" ".\temp\wimlib" -Force
+    Copy-Item -Path ".\temp\wimlib\wimlib-imagex.exe" -Destination ".\bin\wimlib-imagex.exe"
+    Copy-Item -Path ".\temp\wimlib\libwim-15.dll" -Destination ".\bin\libwim-15.dll"
+}
+Test-SHA256 @{ 
+    ".\bin\wimlib-imagex.exe" = "401BF99D6DEC2B749B464183F71D146327AE0856A968C309955F71A0C398A348"
+    ".\bin\libwim-15.dll"     = "6480B53D4ECD4423AF9E100FE15E3D2C3D114EFF33FBA07977E46C1AB124342E"
 }
 if (-not (Test-Path -Path ".\bin\rclone.exe")) {
     Write-Host "rclone not found, downloading..."
@@ -369,14 +401,7 @@ Invoke-Aria2Download -Uri $osUrl -Name $osFile -Big
 
 Write-Host "Verifying hash of original system image..."
 if ($osMd5) {
-    $downloadedMd5 = Get-FileHash -Path $osFile -Algorithm MD5 | Select-Object -ExpandProperty Hash
-    Write-Host "Expected MD5: $osMd5"
-    Write-Host "Actual   MD5: $downloadedMd5"
-    if ($downloadedMd5 -ne $osMd5) {
-        Write-Error "MD5 check failed, the file may be corrupted."
-    } else {
-        Write-Host "MD5 check passed."
-    }
+    Test-MD5 @{ $osFile = $osMd5 }
 }
 
 $osFileext = [System.IO.Path]::GetExtension("$osFile")
@@ -404,7 +429,7 @@ if ($osFileext -eq ".iso") {
 }
 # convert esd to wim
 # if ($osFileext -eq ".esd") {
-#     .\bin\wimlib\wimlib-imagex.exe export "$osFile" all "$osFilename.wim" --compress fast
+#     .\bin\wimlib-imagex.exe export "$osFile" all "$osFilename.wim" --compress fast
 # }
 
 # make xrsys image
@@ -424,7 +449,7 @@ $mountDir = "S:"
 
 # extract imagefile use wimlib-imagex
 Write-Host "Extracting $osFile, please wait..."
-.\bin\wimlib\wimlib-imagex.exe apply "$osFile" $osIndex "$mountDir"
+.\bin\wimlib-imagex.exe apply "$osFile" $osIndex "$mountDir"
 # inject deploy
 Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe" -Destination $mountDir -Name "osc.exe"
@@ -540,7 +565,7 @@ ${sysver}_${sysdate}
 # capture system image
 # Write-Host "Packing $sysFile.wim, please wait..."
 # New-WindowsImage -ImagePath ".\$sysFile.wim" -CapturePath "$mountDir" -Name $sysVer -Description $sysVerCN
-.\bin\wimlib\wimlib-imagex.exe capture "$mountDir" "$sysFile.esd" "$sysVer" "$sysVerCN" --solid  --image-property "DISPLAYNAME=$sysVer" --image-property "DISPLAYDESCRIPTION=$sysVerCN"
+.\bin\wimlib-imagex.exe capture "$mountDir" "$sysFile.esd" "$sysVer" "$sysVerCN" --solid  --image-property "DISPLAYNAME=$sysVer" --image-property "DISPLAYDESCRIPTION=$sysVerCN"
 if ($?) { Write-Host "Capture Successfully!" } else { Write-Error "Capture Failed!" }
 
 # clean up mount dir
@@ -553,7 +578,7 @@ if ($?) { Write-Host "Clean Up Successfully!" } else { Write-Error "Clean Up Fai
 Remove-Item $vhdfile -Force -ErrorAction SilentlyContinue
 
 # convert to esd
-# .\bin\wimlib\wimlib-imagex.exe export "$sysFile.wim" all "$sysFile.esd" --solid
+# .\bin\wimlib-imagex.exe export "$sysFile.wim" all "$sysFile.esd" --solid
 # if ($?) { Write-Host "Convert Successfully!"} else {Write-Error "Convert Failed!"}
 
 # Get file information
