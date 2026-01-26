@@ -380,7 +380,7 @@ Test-SHA256 @{
 if (-not (Test-Path -Path ".\bin\wimlib-imagex.exe")) {
     Write-Host "wimlib-imagex not found, downloading..."
     Invoke-WebRequest -Uri 'https://github.com/user-attachments/files/24684304/wimlib-1.14.4-windows-x86_64-bin.zip' -OutFile ".\temp\wimlib.zip"
-    Expand-Archive -Path ".\temp\wimlib.zip -DestinationPath" ".\temp\wimlib" -Force
+    Expand-Archive -Path ".\temp\wimlib.zip" -DestinationPath ".\temp\wimlib" -Force
     Copy-Item -Path ".\temp\wimlib\wimlib-imagex.exe" -Destination ".\bin\wimlib-imagex.exe"
     Copy-Item -Path ".\temp\wimlib\libwim-15.dll" -Destination ".\bin\libwim-15.dll"
 }
