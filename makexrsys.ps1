@@ -152,7 +152,6 @@ switch ($Target) {
         $osArch = $obj.os_arch
         $sysVer = "XRSYS_Win11_25H2_Pro_ARM64_CN_Full"
         $sysVerCN = "潇然系统_Win11_25H2_专业_ARM64_完整"
-        Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w1125h264" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/25H2/latest_x64.json"
@@ -177,7 +176,6 @@ switch ($Target) {
         $osArch = $obj.os_arch
         $sysVer = "XRSYS_Win11_23H2_Pro_ARM64_CN_Full"
         $sysVerCN = "潇然系统_Win11_23H2_专业_ARM64_完整"
-        Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w1123h264" {
         # $obj = Get-OsBySearch -Path "/潇然工作室/System/Win11" -Search "MSUpdate_Win11_23H2*.esd"
@@ -232,7 +230,6 @@ switch ($Target) {
         $osArch = $obj.os_arch
         $sysVer = "XRSYS_Win11_LTSC2024_EntS_ARM64_CN_Full"
         $sysVerCN = "潇然系统_Win11_LTSC2024_企业S_ARM64_完整"
-        Invoke-WebRequest https://c.xrgzs.top/unattend/arm64.xml -OutFile .\unattend.xml
     }
     "w10lt2164" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/10/LTSC2021/latest_x64.json"
@@ -454,6 +451,9 @@ Write-Host "Extracting $osFile, please wait..."
 Expand-Archive -Path ".\injectdeploy.zip" -DestinationPath "$mountDir" -Force
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Onekey/Config/osc.exe" -Destination $mountDir -Name "osc.exe"
 Copy-Item -Path ".\injectdeploy.bat" -Destination "$mountDir" -Force
+if ($sysArch -eq "arm64") {
+    Invoke-WebRequest "https://c.xrgzs.top/unattend/arm64.xml" -OutFile ".\unattend.xml"
+}
 Copy-Item -Path ".\unattend.xml" -Destination "$mountDir" -Force
 & "$mountDir\injectdeploy.bat" /S
 if ($?) { Write-Host "Inject Deploy Successfully!" } else { Write-Error "Inject Deploy Failed!" }
