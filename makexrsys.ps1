@@ -490,6 +490,10 @@ Invoke-Aria2Download -Uri "https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-
 if ([int]$osVer -ge 10) {
     Invoke-Aria2Download -Uri "https://aka.ms/dotnet/10.0/windowsdesktop-runtime-win-$osArch.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\DotNet" -Name "10.0-windowsdesktop-runtime-win-$osArch.exe" -Big
 }
+# https://blogs.windows.com/windows-insider/2025/10/08/announcing-windows-11-insider-preview-build-27965-canary-channel/
+if ([float]$osVersion -ge 27965.0) {
+    Invoke-Aria2Download -Uri "https://go.microsoft.com/fwlink/?linkid=2337635" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\DotNet" -Name "3.5-dotnet.exe" -Big
+}
 
 # add another softwares
 Invoke-Aria2Download -Uri "$Server/d/pxy/Xiaoran%20Studio/Tools/Tools.exe" -Destination "$mountDir\Windows\Setup\Set\Run" -Name "常用工具.exe" -Big
