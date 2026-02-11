@@ -141,6 +141,30 @@ function Invoke-Aria2Download {
 
 # set original system info
 switch ($Target) {
+      "w1126h1a64" {
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/26H1/latest_arm64.json"
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/26H1/" + $obj.os_version + '/' + $obj.name
+        $osMd5 = $obj.hash.md5
+        $osFile = $obj.name
+        $osIndex = 4
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_26H1_Pro_ARM64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_26H1_专业_ARM64_完整"
+    }
+    "w1126h164" {
+        $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/26H1/latest_x64.json"
+        $osUrl = "$Server/d/pxy/System/MSUpdate/11/26H1/" + $obj.os_version + '/' + $obj.name
+        $osMd5 = $obj.hash.md5
+        $osFile = $obj.name
+        $osIndex = 4
+        $osVer = $obj.os_ver
+        $osVersion = $obj.os_version
+        $osArch = $obj.os_arch
+        $sysVer = "XRSYS_Win11_26H1_Pro_x64_CN_Full"
+        $sysVerCN = "潇然系统_Win11_26H1_专业_x64_完整"
+    }
     "w1125h2a64" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/25H2/latest_arm64.json"
         $osUrl = "$Server/d/pxy/System/MSUpdate/11/25H2/" + $obj.os_version + '/' + $obj.name
