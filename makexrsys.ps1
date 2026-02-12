@@ -540,6 +540,7 @@ if ([int]$osVer -ge 10) {
             'microsoft.getstarted',
             'microsoft.microsoft3dviewer',
             'microsoft.microsoftofficehub',
+            'microsoft.copilot',
             'microsoft.microsoftsolitairecollection',
             'microsoft.microsoftstickynotes',
             'microsoft.mixedreality.portal',
