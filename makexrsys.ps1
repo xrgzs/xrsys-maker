@@ -535,6 +535,7 @@ if ([int]$osVer -ge 10) {
             'microsoft.todos',
             'microsoft.bingnews',
             'microsoft.bingweather',
+            'microsoft.bingsearch',
             'microsoft.windowscommunicationsapps',
             'microsoft.gethelp',
             'microsoft.getstarted',
