@@ -549,6 +549,7 @@ if ([int]$osVer -ge 10) {
             'microsoft.people',
             'microsoft.powerautomatedesktop',
             'microsoft.windowsfeedbackhub',
+            'Microsoft.StartExperiencesApp',
             'microsoft.windowsmaps',
             'microsoft.yourphone',
             'microsoft.zunemusic',
