@@ -141,7 +141,7 @@ function Invoke-Aria2Download {
 
 # set original system info
 switch ($Target) {
-      "w1126h1a64" {
+    "w1126h1a64" {
         $obj = Invoke-RestMethod -Uri "$Server/d/pxy/System/MSUpdate/11/26H1/latest_arm64.json"
         $osUrl = "$Server/d/pxy/System/MSUpdate/11/26H1/" + $obj.os_version + '/' + $obj.name
         $osMd5 = $obj.hash.md5
@@ -497,10 +497,11 @@ Remove-Item -Path $isopath -ErrorAction SilentlyContinue
 if ([int]$osVer -ge 10) {
     # add edge runtime Windows 10+ 
     $msedge = (Invoke-RestMethod https://raw.githubusercontent.com/Bush2021/edge_installer/main/data.json)."msedge-stable-win-$osArch"
-    Invoke-Aria2Download -Uri $msedge.下载链接 -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name $msedge.文件名 -Big
+    $msedgeUrl = "https://github.com/Bush2021/edge_installer/releases/download/$($msedge.version)/$($msedge.文件名)"
+    Invoke-Aria2Download -Uri $msedgeUrl -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name $msedge.文件名 -Big
     # add pwsh runtime Windows 10+
     $pwshver = (Invoke-RestMethod https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/metadata.json).ReleaseTag -replace '^v'
-    Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v${pwshver}/PowerShell-${pwshver}-win-${osArch}.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-${pwshver}-win.msi" -Big
+    Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v$pwshver/PowerShell-$pwshver-win-$osArch.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-$pwshver-win.msi" -Big
 } else {
     # add edge runtime Windows 8.1-
     Invoke-Aria2Download -Uri "$Server/d/pxy/Software/Edge/109/MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name "MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Big
