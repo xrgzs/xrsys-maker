@@ -495,13 +495,35 @@ Remove-Item -Path $isopath -ErrorAction SilentlyContinue
 
 # add software pack
 if ([int]$osVer -ge 10) {
-    # add edge runtime Windows 10+ 
-    $msedge = (Invoke-RestMethod https://raw.githubusercontent.com/Bush2021/edge_installer/main/data.json)."msedge-stable-win-$osArch"
-    $msedgeUrl = "https://github.com/Bush2021/edge_installer/releases/download/$($msedge.version)/$($msedge.文件名)"
-    Invoke-Aria2Download -Uri $msedgeUrl -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name $msedge.文件名 -Big
     # add pwsh runtime Windows 10+
     $pwshver = (Invoke-RestMethod https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/metadata.json).ReleaseTag -replace '^v'
     Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v$pwshver/PowerShell-$pwshver-win-$osArch.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-$pwshver-win.msi" -Big
+  
+    # add edge runtime Windows 10+ 
+    New-Item -Path ".\temp\Edge" -ItemType "directory" -ErrorAction SilentlyContinue
+    $isEdgeProviderExist = Test-Path -Path "$mountDir\Windows\System32\Dism\EdgeProvider.dll"
+    if (!$isEdgeProviderExist) {
+        Invoke-Aria2Download -Uri "$Server/d/pxy/System/Windows/Win10/Res/EdgeProvider/26100_$osArch.zip" -Destination ".\temp\Edge" -Name "EdgeProvider.zip"
+        Expand-Archive -Path ".\temp\Edge\EdgeProvider.zip" -DestinationPath ".\temp\Edge" -Force
+        Rename-Item -Path "$mountDir\Windows\System32\Dism\DismProv.dll" -NewName "DismProv.dll.bak" -Force
+        Copy-Item -Path ".\temp\Edge\EdgeProvider.dll" -Destination "$mountDir\Windows\System32\Dism\EdgeProvider.dll" -Force
+        Copy-Item -Path ".\temp\Edge\DismProv.dll" -Destination "$mountDir\Windows\System32\Dism\DismProv.dll" -Force
+    }
+    Invoke-Aria2Download -Uri "https://github.com/xrgzs/MSUpdate.Edge/releases/latest/download/Edge_$osArch.wim" -Destination ".\temp\Edge" -Name "Edge.wim" -Big
+    DISM.exe /Image:"$mountDir" /Remove-Edge
+    DISM.exe /Image:"$mountDir" /Add-Edge /SupportPath:".\temp\Edge"
+    if ($?) {
+        Write-Host "Edge runtime added successfully!"
+    } else {
+        # use old method if add edge runtime failed
+        $msedge = (Invoke-RestMethod https://raw.githubusercontent.com/Bush2021/edge_installer/main/data.json)."msedge-stable-win-$osArch"
+        $msedgeUrl = "https://github.com/Bush2021/edge_installer/releases/download/$($msedge.version)/$($msedge.文件名)"
+        Invoke-Aria2Download -Uri $msedgeUrl -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name $msedge.文件名 -Big
+    }
+    if (!$isEdgeProviderExist) {
+        Remove-Item -Path "$mountDir\Windows\System32\Dism\EdgeProvider.dll" -ErrorAction SilentlyContinue
+        Rename-Item -Path "$mountDir\Windows\System32\Dism\DismProv.dll.bak" -NewName "DismProv.dll" -Force
+    }
 } else {
     # add edge runtime Windows 8.1-
     Invoke-Aria2Download -Uri "$Server/d/pxy/Software/Edge/109/MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name "MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Big
