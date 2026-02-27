@@ -522,7 +522,10 @@ if ([int]$osVer -ge 10) {
     }
     if (!$isEdgeProviderExist) {
         Remove-Item -Path "$mountDir\Windows\System32\Dism\EdgeProvider.dll" -ErrorAction SilentlyContinue
-        Rename-Item -Path "$mountDir\Windows\System32\Dism\DismProv.dll.bak" -NewName "DismProv.dll" -Force
+        if (Test-Path -Path "$mountDir\Windows\System32\Dism\DismProv.dll.bak") {
+            Remove-Item -Path "$mountDir\Windows\System32\Dism\DismProv.dll" -ErrorAction SilentlyContinue
+            Rename-Item -Path "$mountDir\Windows\System32\Dism\DismProv.dll.bak" -NewName "DismProv.dll" -Force
+        }
     }
 } else {
     # add edge runtime Windows 8.1-
