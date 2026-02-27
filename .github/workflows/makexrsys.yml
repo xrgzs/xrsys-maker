@@ -49,4 +49,10 @@ jobs:
       - name: Big Task
         shell: pwsh
         run: |
-          .\makexrsys.ps1 -Target "${{ inputs.target }}" ${{ inputs.fulldrv == true && '-FullDrv' || '' }} ${{ inputs.latest == true && '-Latest' || '' }}
+          # Install gsudo
+          Invoke-WebRequest -Uri "https://github.com/gerardog/gsudo/releases/download/v2.6.1/gsudo.portable.zip" -OutFile "gsudo.zip"
+          Expand-Archive -Path "gsudo.zip" -DestinationPath "gsudo"
+          $env:Path = "$PWD\gsudo\x64;$env:Path"
+          Import-Module "$PWD\gsudo\x64\gsudoModule.psm1"
+
+          gsudo --ti .\makexrsys.ps1 -Target "${{ inputs.target }}" ${{ inputs.fulldrv == true && '-FullDrv' || '' }} ${{ inputs.latest == true && '-Latest' || '' }}

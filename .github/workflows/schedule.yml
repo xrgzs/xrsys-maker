@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   schedule:
     # - cron: '0 0 * * *' #nightly
-    - cron: '0 0 * * 5' #weekly
+    - cron: "0 0 * * 5" #weekly
 
 jobs:
   makexrsys:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: 
+        target:
           - w1126h1a64
           - w1126h164
           # - w1125h2a64
@@ -26,7 +26,7 @@ jobs:
           - w10lt1964
           - w10lt1664
           - w7ult64
-        fulldrv: 
+        fulldrv:
           - true
           - false
         # no arm64 fulldrv
@@ -53,4 +53,10 @@ jobs:
       - name: Big Task
         shell: pwsh
         run: |
-          .\makexrsys.ps1 -Target "${{ matrix.target }}" -Latest ${{ matrix.fulldrv == true && '-FullDrv' || '' }}
+          # Install gsudo
+          Invoke-WebRequest -Uri "https://github.com/gerardog/gsudo/releases/download/v2.6.1/gsudo.portable.zip" -OutFile "gsudo.zip"
+          Expand-Archive -Path "gsudo.zip" -DestinationPath "gsudo"
+          $env:Path = "$PWD\gsudo\x64;$env:Path"
+          Import-Module "$PWD\gsudo\x64\gsudoModule.psm1"
+
+          gsudo --ti .\makexrsys.ps1 -Target "${{ matrix.target }}" -Latest ${{ matrix.fulldrv == true && '-FullDrv' || '' }}
