@@ -601,8 +601,18 @@ if ([int]$osVer -ge 10) {
     }
     # disable default wd
     Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object { $_.FeatureName -like "*Defender*" } | Disable-WindowsOptionalFeature
-    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object { $_.FeatureName -like "*Recall*" } | Disable-WindowsOptionalFeature
-    
+
+    # remove onedrive
+    try {
+        Remove-WindowsCapability -Path "$mountDir" -Name "Microsoft-Windows-OneDrive-Setup-Package" 
+        Remove-WindowsCapability -Path "$mountDir" -Name "Microsoft-Windows-OneDrive-Setup-WOW64-Package" 
+    } catch {
+        Write-Host "No OneDrive found, skipping..."
+    }
+
+    # remove recall
+    Get-WindowsOptionalFeature -Path "$mountDir" | Where-Object { $_.FeatureName -like "*Recall*" } | Disable-WindowsOptionalFeature -Remove
+
     # remove webview2 fod (hidden), do this in cleanupcomponents stage
     # Remove-WindowsCapability -Path "$mountDir" -Name "Edge.WebView2.Platform~~~~" -ErrorAction SilentlyContinue
 
