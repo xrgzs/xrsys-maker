@@ -37,10 +37,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get rclone Config
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xrgzs/rclone-action
           token: ${{ secrets.RCLONE_TOKEN }}
