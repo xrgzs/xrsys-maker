@@ -19,7 +19,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Server = "https://alist.xrgzs.top"
+$Server = "https://list.xrgzs.top"
 
 function Invoke-Aria2Download {
     param (
