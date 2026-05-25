@@ -2,7 +2,7 @@
 @echo off
 setlocal enabledelayedexpansion
 color a
-title 潇然系统部署手动离线接管程序 - V2025.11.2.0
+title 潇然系统部署手动离线接管程序 - V2026.5.25.0
 cd /d "%~dp0"
 set silent=0
 
@@ -43,7 +43,7 @@ cls
 echo.
 echo 提示：即将接管系统部署，注入系统部署
 echo.
-echo 注意：1. 仅支持接管Win8.1x64、Win10x64、Win11x64系统；
+echo 注意：1. 默认仅支持接管Win8.1x64、Win10x64、Win11x64系统；
 echo 　　　2. 您的执行环境如果不带choice.exe，将无法完成后续配置；
 echo 　　　3. 建议在PE环境或TrustedInstaller用户下运行此脚本
 echo.
@@ -79,6 +79,8 @@ SgrmBroker
 webthreatdefsvc
 webthreatdefsvc
 ) do REG ADD "HKLM\Mount_SYSTEM\ControlSet001\Services\%%a" /f /v "Start" /t REG_DWORD /d 4
+echo 拒绝厂商WPBT执行
+REG ADD "HKLM\Mount_SYSTEM\ControlSet001\Control\Session Manager" /f /v "DisableWpbtExecution" /t REG_DWORD /d 1
 echo 跳过系统配置检测
 for %%a in (
 BypassCPUCheck
