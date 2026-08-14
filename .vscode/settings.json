@@ -1,3 +1,6 @@
 {
-    "powershell.codeFormatting.preset": "OTBS"
+    "powershell.codeFormatting.preset": "OTBS",
+    "[bat]": {
+        "files.encoding": "gbk"
+    }
 }
