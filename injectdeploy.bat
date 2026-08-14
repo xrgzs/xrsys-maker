@@ -78,6 +78,7 @@ SgrmAgent
 SgrmBroker
 webthreatdefsvc
 webthreatdefsvc
+MDCoreSvc
 ) do REG ADD "HKLM\Mount_SYSTEM\ControlSet001\Services\%%a" /f /v "Start" /t REG_DWORD /d 4
 echo ¾Ü¾ø³§ÉÌWPBTÖ´ÐÐ
 REG ADD "HKLM\Mount_SYSTEM\ControlSet001\Control\Session Manager" /f /v "DisableWpbtExecution" /t REG_DWORD /d 1
