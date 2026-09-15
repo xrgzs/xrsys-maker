@@ -15,8 +15,8 @@ jobs:
         target:
           - w1126h1a64
           - w1126h164
-          # - w1125h2a64
-          - w1125h264
+          # - w1126h2a64
+          - w1126h264
           # - w1123h2a64
           - w1123h264
           - w1022h264
@@ -33,7 +33,7 @@ jobs:
         exclude:
           - target: w1126h1a64
             fulldrv: true
-          - target: w1125h2a64
+          - target: w1126h2a64
             fulldrv: true
           - target: w1123h2a64
             fulldrv: true
