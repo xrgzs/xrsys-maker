@@ -495,10 +495,50 @@ Remove-Item -Path $isopath -ErrorAction SilentlyContinue
 
 # add software pack
 if ([int]$osVer -ge 10) {
-    # add pwsh runtime Windows 10+
-    $pwshver = (Invoke-RestMethod https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/metadata.json).ReleaseTag -replace '^v'
-    Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v$pwshver/PowerShell-$pwshver-win-$osArch.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-$pwshver-win.msi" -Big
-  
+    if ([float]$osVersion -ge 17763.0) {
+        # Provision PowerShell 7 MSIX on Windows 10 1809+
+        $pwshver = (Invoke-RestMethod https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/metadata.json).ReleaseTag -replace '^v'
+        $pwshPackageName = "PowerShell-$pwshver.msixbundle"
+        $pwshPackagePath = Join-Path ".\temp\PWSH" $pwshPackageName
+        $pwshRuntimeDir = "$mountDir\Windows\Setup\Set\osc\runtime\PWSH"
+        New-Item -ItemType Directory -Path (Split-Path -Parent $pwshPackagePath) -Force | Out-Null
+        Invoke-Aria2Download -Uri "https://github.com/PowerShell/PowerShell/releases/download/v$pwshver/$pwshPackageName" -Destination (Split-Path -Parent $pwshPackagePath) -Name $pwshPackageName -Big
+        if (!(Test-Path -LiteralPath $pwshPackagePath)) {
+            Write-Error "PowerShell MSIX bundle not found: $pwshPackagePath"
+        }
+        $pwshPackagePath = (Resolve-Path -LiteralPath $pwshPackagePath).Path
+
+        if ([float]$osVersion -lt 19041.0) {
+            $softwareHive = 'HKLM\XRSYS_PWSH_SOFTWARE'
+            & reg.exe load $softwareHive "$mountDir\Windows\System32\config\SOFTWARE"
+            if ($LASTEXITCODE -ne 0) {
+                Write-Error "Failed to load the offline SOFTWARE registry hive."
+            }
+            try {
+                & reg.exe add "$softwareHive\Policies\Microsoft\Windows\Appx" /v AllowAllTrustedApps /t REG_DWORD /d 1 /f
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Error "Failed to enable trusted app sideloading for the offline image."
+                }
+            } finally {
+                & reg.exe unload $softwareHive | Out-Null
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Error "Failed to unload the offline SOFTWARE registry hive."
+                }
+            }
+        }
+
+        $pwshDismLog = "$mountDir\Windows\Logs\DISM\PowerShell-Provision.log"
+        New-Item -ItemType Directory -Path (Split-Path -Parent $pwshDismLog) -Force | Out-Null
+        & DISM.exe "/Image:$($mountDir)\" /Add-ProvisionedAppxPackage "/PackagePath:$pwshPackagePath" /SkipLicense /Region:all "/LogPath:$pwshDismLog"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to provision PowerShell MSIX bundle (DISM exit code $LASTEXITCODE). See $pwshDismLog"
+        }
+        New-Item -ItemType Directory -Path $pwshRuntimeDir -Force | Out-Null
+        Copy-Item -LiteralPath $pwshPackagePath -Destination $pwshRuntimeDir -Force
+    } else {
+        Write-Warning "Skipping PowerShell 7 MSIX: Windows build $osVersion is below the minimum supported build 17763."
+    }
+
     # add edge runtime Windows 10+ 
     New-Item -Path ".\temp\Edge" -ItemType "directory" -ErrorAction SilentlyContinue
     $isEdgeProviderExist = Test-Path -Path "$mountDir\Windows\System32\Dism\EdgeProvider.dll"
@@ -530,8 +570,6 @@ if ([int]$osVer -ge 10) {
 } else {
     # add edge runtime Windows 8.1-
     Invoke-Aria2Download -Uri "$Server/d/pxy/Software/Edge/109/MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\Edge" -Name "MicrosoftEdge_X64_109.0.1518.78_Stable.exe" -Big
-    # add pwsh runtime Windows 8.1-
-    Invoke-Aria2Download -Uri "$Server/d/pxy/Software/PowerShell/PowerShell-7.2.24-win-x64.msi" -Destination "$mountDir\Windows\Setup\Set\osc\runtime\PWSH" -Name "PowerShell-7.2.24-win-x64.msi" -Big
 }
 
 # add runtimes
